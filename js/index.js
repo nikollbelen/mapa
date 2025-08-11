@@ -64,7 +64,8 @@ Cesium.GeoJsonDataSource.load("./data/terreno.geojson", {
         e.polygon.material = (isLargest ? Cesium.Color.GRAY : Cesium.Color.ORANGE).withAlpha(0.5);
         e.polygon.outline = true;
         e.polygon.outlineColor = isLargest ? Cesium.Color.DARKGRAY : Cesium.Color.ORANGE;
-        e.polygon.height = 0;
+        e.polygon.height = 0.1;
+        e.polygon.heightReference = Cesium.HeightReference.RELATIVE_TO_GROUND
         // Guardar material base para restaurar correctamente tras hover/selección
         e._baseMaterial = e.polygon.material;
       });
@@ -235,10 +236,7 @@ Cesium.GeoJsonDataSource.load("./data/terreno.geojson", {
 
       // 2) Si no hay pick, probar con punto-en-polígono usando posición bajo el mouse
       if (!entity) {
-        const cartOnGlobe = viewer.camera.pickEllipsoid(
-          movement.endPosition,
-          viewer.scene.globe.ellipsoid
-        );
+        const cartOnGlobe = viewer.scene.pickPosition(movement.endPosition);
         if (cartOnGlobe) {
           const carto = Cesium.Cartographic.fromCartesian(cartOnGlobe);
           // Buscar el primer polígono (excepto fid=1) cuyo relleno contenga el punto
@@ -342,7 +340,7 @@ Cesium.GeoJsonDataSource.load("./data/terreno.geojson", {
 
       // Fallback por punto-en-polígono
       if (!entity) {
-        const cart = viewer.camera.pickEllipsoid(click.position, viewer.scene.globe.ellipsoid);
+        const cart = viewer.scene.pickPosition(click.position);
         if (cart) {
           const carto = Cesium.Cartographic.fromCartesian(cart);
           const polyEntity = ds.entities.values.find((e) => {
