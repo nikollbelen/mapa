@@ -1,0 +1,18 @@
+*, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#cesiumContainer {
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Oculta posibles créditos/overlays de Cesium si se renderizan por CSS */
+.cesium-viewer-bottom,
+.cesium-widget-credits,
+.cesium-credit-textContainer,
+.cesium-credit-imageContainer {
+    display: none !important;
+}
