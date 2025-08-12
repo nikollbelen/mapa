@@ -22,11 +22,104 @@ const viewer = new Cesium.Viewer("cesiumContainer", {
   requestRenderMode: true,
 });
 
+// Asegurarse de que el terreno esté cargado antes de añadir la línea
+// Primero, verifiquemos que Cesium se haya cargado correctamente
+console.log('Cesium está cargado:', typeof Cesium !== 'undefined');
+const API_KEY = "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImJlOTVmNWNlOGI4MzQ4MWM5ODY2MmQ5MTIxMGYxY2NmIiwiaCI6Im11cm11cjY0In0=";
+
+// Función para crear la línea
+async function createLine() {
+  try {
+    console.log('Iniciando creación de la línea...');
+
+    // Coordenadas de inicio y fin
+    const startLon = -71.9053;
+    const startLat = -17.1005;
+    const endLon = -71.9082;
+    const endLat = -17.0985;
+
+    console.log('Coordenadas de la línea:');
+    console.log('Inicio:', startLon, startLat);
+    console.log('Fin:', endLon, endLat);
+
+    // Crear puntos en los extremos para verificar las posiciones
+    viewer.entities.add({
+      position: Cesium.Cartesian3.fromDegrees(startLon, startLat),
+      point: { pixelSize: 15, color: Cesium.Color.RED }
+    });
+
+    viewer.entities.add({
+      position: Cesium.Cartesian3.fromDegrees(endLon, endLat),
+      point: { pixelSize: 15, color: Cesium.Color.BLUE }
+    });
+
+    // Obtener la ruta de OpenRouteService 2000 diarios
+    const response = await fetch(
+      `https://api.openrouteservice.org/v2/directions/driving-car?` +
+      `api_key=${API_KEY}&` +
+      `start=${startLon},${startLat}&` +
+      `end=${endLon},${endLat}`
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error en la petición: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Extraer coordenadas de la ruta
+    const coords = data.features[0].geometry.coordinates; // Array de [lon, lat]
+
+    // Convertir a formato para Cesium (array plano de [lon, lat, lon, lat, ...])
+    const positions = [];
+    coords.forEach(coord => {
+      positions.push(coord[0], coord[1]);
+    });
+
+    // Crear la polilínea con la ruta obtenida
+    const line = viewer.entities.add({
+      name: 'Ruta optimizada',
+      polyline: {
+        positions: Cesium.Cartesian3.fromDegreesArray(positions),
+        width: 5,
+        material: new Cesium.PolylineGlowMaterialProperty({
+          color: Cesium.Color.YELLOW.withAlpha(0.8),
+          glowPower: 0.2,
+          taperPower: 0.5
+        }),
+        clampToGround: true,
+        shadows: Cesium.ShadowMode.DISABLED,
+        depthFailMaterial: Cesium.Color.RED.withAlpha(0.5)
+      }
+    });
+
+    console.log('Ruta creada con éxito:', line);
+
+    // Acercar la cámara para ver toda la ruta
+    viewer.zoomTo(viewer.entities);
+
+    return line;
+  } catch (error) {
+    console.error('Error al crear la ruta:', error);
+    return null;
+  }
+}
+
+console.log('Terreno cargado correctamente');
+const line = createLine();
+if (line) {
+  console.log('Línea creada exitosamente');
+} else {
+  console.error('No se pudo crear la línea');
+}
+
 // Ocultar créditos de Cesium (solo el globo)
 viewer.cesiumWidget.creditContainer.style.display = "none";
 
 // Mejorar picking sobre materiales translúcidos
 viewer.scene.pickTranslucentDepth = true;
+
+
 
 // Ocultar modal al cargar; se mostrará al hacer click en un polígono (excepto fid=1)
 const modalEl = document.getElementById("modalOverlay");
