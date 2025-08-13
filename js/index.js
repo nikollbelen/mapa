@@ -464,3 +464,89 @@ Cesium.GeoJsonDataSource.load("./data/terreno.geojson", {
 
 // Fly the camera to San Francisco at the given longitude, latitude, and height.
 viewer.camera.flyTo(targetLocation);
+
+// Controles: pan arriba/abajo y zoom in/out mediante botones de la UI
+(() => {
+  const cam = viewer.camera;
+  const scene = viewer.scene;
+
+  const byId = (id) => document.getElementById(id);
+  const btnUp = byId('up');
+  const btnDown = byId('down');
+  const btnZoomIn = byId('zoomIn');
+  const btnZoomOut = byId('zoomOut');
+  const btnHome = byId('home');
+  const btnView3D = byId('view3d');
+
+  // Factor de movimiento basado en la altura actual para que sea proporcional
+  const getStep = () => Math.max(5.0, cam.positionCartographic.height * 0.10);
+  const getZoomStep = () => Math.max(1.0, cam.positionCartographic.height * 0.15);
+
+  const safeRequestRender = () => {
+    try { scene.requestRender(); } catch (e) { /* noop */ }
+  };
+
+  if (btnUp) {
+    btnUp.addEventListener('click', () => {
+      cam.moveUp(getStep());
+      safeRequestRender();
+    });
+  }
+
+  if (btnDown) {
+    btnDown.addEventListener('click', () => {
+      cam.moveDown(getStep());
+      safeRequestRender();
+    });
+  }
+
+  if (btnZoomIn) {
+    btnZoomIn.addEventListener('click', () => {
+      cam.zoomIn(getZoomStep());
+      safeRequestRender();
+    });
+  }
+
+  if (btnZoomOut) {
+    btnZoomOut.addEventListener('click', () => {
+      cam.zoomOut(getZoomStep());
+      safeRequestRender();
+    });
+  }
+
+  // Vista superior (nadir) al presionar Home
+  if (btnHome) {
+    btnHome.addEventListener('click', () => {
+      try {
+        const carto = Cesium.Cartographic.fromCartesian(targetLocation.destination);
+        const height = Math.max(400.0, (carto.height || 100.0) * 3.0);
+        viewer.camera.flyTo({
+          destination: Cesium.Cartesian3.fromRadians(carto.longitude + 0.0001, carto.latitude + 0.0001, height),
+          orientation: {
+            heading: Cesium.Math.toRadians(0.0),
+            pitch: Cesium.Math.toRadians(-90.0), // top-down
+            roll: 0.0,
+          },
+          duration: 1.0,
+        });
+      } catch (e) {
+        // Fallback si falla el cálculo
+        viewer.camera.setView({
+          destination: targetLocation.destination,
+          orientation: {
+            heading: Cesium.Math.toRadians(0.0),
+            pitch: Cesium.Math.toRadians(-90.0),
+            roll: 0.0,
+          },
+        });
+      }
+    });
+  }
+
+  // Vista oblicua inicial al presionar View 3D
+  if (btnView3D) {
+    btnView3D.addEventListener('click', () => {
+      viewer.camera.flyTo(targetLocation);
+    });
+  }
+})();
