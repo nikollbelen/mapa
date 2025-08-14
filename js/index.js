@@ -136,7 +136,7 @@ trees.features.forEach((feature) => {
 });
 
 // Load terreno polygon from GeoJSON
-Cesium.GeoJsonDataSource.load("./data/terreno.geojson", {
+Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
   clampToGround: true,
   stroke: Cesium.Color.ORANGE,
   fill: Cesium.Color.ORANGE.withAlpha(0.4),
@@ -153,7 +153,7 @@ Cesium.GeoJsonDataSource.load("./data/terreno.geojson", {
         if (e.properties && e.properties.fid) {
           fid = typeof e.properties.fid.getValue === "function" ? e.properties.fid.getValue() : e.properties.fid;
         }
-        const isLargest = fid === 1;
+        const isLargest = fid === 0;
         e.polygon.material = (isLargest ? Cesium.Color.GRAY : Cesium.Color.ORANGE).withAlpha(0.5);
         e.polygon.outline = true;
         e.polygon.outlineColor = isLargest ? Cesium.Color.DARKGRAY : Cesium.Color.ORANGE;
