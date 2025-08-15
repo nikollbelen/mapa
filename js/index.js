@@ -5,7 +5,9 @@ import { createModel } from "./CesiumFun.js";
 // Your access token can be found at: https://ion.cesium.com/tokens.
 // This is the default access token from your ion account
 Cesium.Ion.defaultAccessToken = cesiumAccessToken;
-
+const startLonLat = [-71.8968, -17.1000];
+const comisariaLonLat = [-71.9050, -17.1022];
+const plazaLonLat = [-71.9046, -17.1017];
 // Initialize the Cesium Viewer in the HTML element with the `cesiumContainer` ID.
 const viewer = new Cesium.Viewer("cesiumContainer", {
   animation: false,
@@ -27,38 +29,14 @@ const viewer = new Cesium.Viewer("cesiumContainer", {
 console.log('Cesium está cargado:', typeof Cesium !== 'undefined');
 const API_KEY = "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImJlOTVmNWNlOGI4MzQ4MWM5ODY2MmQ5MTIxMGYxY2NmIiwiaCI6Im11cm11cjY0In0=";
 
-// Función para crear la línea
-async function createLine() {
+// Función para calcular y mostrar la ruta
+async function calculateRoute(start, end) {
   try {
-    console.log('Iniciando creación de la línea...');
-
-    // Coordenadas de inicio y fin
-    const startLon = -71.9053;
-    const startLat = -17.1005;
-    const endLon = -71.9082;
-    const endLat = -17.0985;
-
-    console.log('Coordenadas de la línea:');
-    console.log('Inicio:', startLon, startLat);
-    console.log('Fin:', endLon, endLat);
-
-    // Crear puntos en los extremos para verificar las posiciones
-    viewer.entities.add({
-      position: Cesium.Cartesian3.fromDegrees(startLon, startLat),
-      point: { pixelSize: 15, color: Cesium.Color.RED }
-    });
-
-    viewer.entities.add({
-      position: Cesium.Cartesian3.fromDegrees(endLon, endLat),
-      point: { pixelSize: 15, color: Cesium.Color.BLUE }
-    });
-
-    // Obtener la ruta de OpenRouteService 2000 diarios
     const response = await fetch(
       `https://api.openrouteservice.org/v2/directions/driving-car?` +
       `api_key=${API_KEY}&` +
-      `start=${startLon},${startLat}&` +
-      `end=${endLon},${endLat}`
+      `start=${start[0]},${start[1]}&` +
+      `end=${end[0]},${end[1]}`
     );
 
     if (!response.ok) {
@@ -66,39 +44,147 @@ async function createLine() {
     }
 
     const data = await response.json();
-
-    // Extraer coordenadas de la ruta
-    const coords = data.features[0].geometry.coordinates; // Array de [lon, lat]
-
-    // Convertir a formato para Cesium (array plano de [lon, lat, lon, lat, ...])
+    const coords = data.features[0].geometry.coordinates;
     const positions = [];
     coords.forEach(coord => {
       positions.push(coord[0], coord[1]);
     });
 
-    // Crear la polilínea con la ruta obtenida
-    const line = viewer.entities.add({
-      name: 'Ruta optimizada',
+    // Eliminar ruta anterior si existe
+    if (window.currentRoute) {
+      viewer.entities.remove(window.currentRoute);
+    }
+    const boundingSphere = Cesium.BoundingSphere.fromPoints(Cesium.Cartesian3.fromDegreesArray(positions));
+    // Crear la nueva ruta
+    window.currentRoute = viewer.entities.add({
+      name: 'Ruta',
       polyline: {
         positions: Cesium.Cartesian3.fromDegreesArray(positions),
-        width: 5,
-        material: new Cesium.PolylineGlowMaterialProperty({
-          color: Cesium.Color.YELLOW.withAlpha(0.8),
-          glowPower: 0.2,
-          taperPower: 0.5
-        }),
+        width: 15, // Aumentado el grosor de la línea
+        material: new Cesium.Color(0.1, 0.1, 0.1, 1.0), // Gris muy oscuro
         clampToGround: true,
-        shadows: Cesium.ShadowMode.DISABLED,
-        depthFailMaterial: Cesium.Color.RED.withAlpha(0.5)
+        shadows: Cesium.ShadowMode.DISABLED
       }
     });
 
-    console.log('Ruta creada con éxito:', line);
 
-    // Acercar la cámara para ver toda la ruta
-    viewer.zoomTo(viewer.entities);
+    // Movemos la cámara para encuadrar todo
+    viewer.camera.flyToBoundingSphere(boundingSphere, {
+      duration: 2, // segundos de animación
+      offset: new Cesium.HeadingPitchRange(
+        Cesium.Math.toRadians(0), // orientación horizontal
+        Cesium.Math.toRadians(-30), // inclinación hacia abajo
+        boundingSphere.radius * 2.0 // distancia para que quepa toda la ruta
+      )
+    });
+    return true;
+  } catch (error) {
+    console.error('Error al calcular la ruta:', error);
+    return false;
+  }
+}
 
-    return line;
+// Función para crear la línea
+async function createLine() {
+  try {
+    console.log('Iniciando marcadores...');
+
+    // Eliminar ruta anterior si existe
+    if (window.currentRoute) {
+      viewer.entities.remove(window.currentRoute);
+      window.currentRoute = null;
+    }
+
+    // Crear marcador de la comisaría
+    const comisariaMarker = viewer.entities.add({
+      id: "marcador_1",
+      name: 'Comisaría de Mejía',
+      position: Cesium.Cartesian3.fromDegrees(comisariaLonLat[0], comisariaLonLat[1]),
+      billboard: {
+        image: 'assets/comisaria.webp',
+        width: 100,
+        height: 100,
+        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+        disableDepthTestDistance: Number.POSITIVE_INFINITY
+      },
+      label: {
+        text: 'Comisaría de Mejía',
+        font: 'bold 16px sans-serif',
+        fillColor: Cesium.Color.WHITE,
+        outlineColor: Cesium.Color.BLACK,
+        outlineWidth: 3,
+        style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+        verticalOrigin: Cesium.VerticalOrigin.TOP,
+        pixelOffset: new Cesium.Cartesian2(0, 0),
+        disableDepthTestDistance: Number.POSITIVE_INFINITY
+      },
+      properties: {
+        type: 'comisaria',
+        title: 'Comisaría de Mejía',
+        description: 'Comisaría de Mejía',
+        position: comisariaLonLat
+      }
+    });
+
+    // Crear marcador de la plaza
+    const plazaMarker = viewer.entities.add({
+      id: "marcador_2",
+      name: 'Plaza de Mejía',
+      position: Cesium.Cartesian3.fromDegrees(plazaLonLat[0], plazaLonLat[1]),
+      billboard: {
+        image: 'assets/plaza_mejia.webp',
+        width: 100,
+        height: 100,
+        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+        disableDepthTestDistance: Number.POSITIVE_INFINITY
+      },
+      label: {
+        text: 'Plaza de Mejía',
+        font: 'bold 16px sans-serif',
+        fillColor: Cesium.Color.WHITE,
+        outlineColor: Cesium.Color.BLACK,
+        outlineWidth: 3,
+        style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+        verticalOrigin: Cesium.VerticalOrigin.TOP,
+        pixelOffset: new Cesium.Cartesian2(0, 0),
+        disableDepthTestDistance: Number.POSITIVE_INFINITY
+      },
+      properties: {
+        type: 'plaza',
+        title: 'Plaza de Mejía',
+        description: 'Plaza de Mejía',
+        position: plazaLonLat
+      }
+    });
+
+
+    // Escuchar clics
+    viewer.screenSpaceEventHandler.setInputAction(function onLeftClick(movement) {
+      const pickedObject = viewer.scene.pick(movement.position);
+
+      // Si no se clicó sobre nada, salir
+      if (!Cesium.defined(pickedObject)) return;
+
+      // Verificar si el clic fue sobre un Entity con billboard
+      if (
+        pickedObject.id &&
+        pickedObject.id.billboard && // Solo billboards (marcadores)
+        pickedObject.id.id.startsWith("marcador_1") // Filtro extra opcional
+      ) {
+        console.log("Se hizo clic en el marcador:", pickedObject.id.id);
+        // Aquí llamas a tu función para abrir modal
+        // abrirModal(pickedObject.id);
+        showLocationModal("Comisaria de Mejia", "Avenida Tambo S/N, Ensenada 04420", comisariaLonLat)
+      } else if (pickedObject.id &&
+        pickedObject.id.billboard && // Solo billboards (marcadores)
+        pickedObject.id.id.startsWith("marcador_2")) {
+        console.log("Se hizo clic en el marcador:", pickedObject.id.id);
+        // Aquí llamas a tu función para abrir modal
+        // abrirModal(pickedObject.id);
+        showLocationModal("Plaza de Mejia", "C. Nueva s/n, Arequipa 04420", plazaLonLat)
+      }
+    }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+    return true;
   } catch (error) {
     console.error('Error al crear la ruta:', error);
     return null;
@@ -110,11 +196,39 @@ const line = createLine();
 if (line) {
   console.log('Línea creada exitosamente');
 } else {
-  console.error('No se pudo crear la línea');
+  console.error('No se pudieron crear los marcadores');
 }
 
 // Ocultar créditos de Cesium (solo el globo)
 viewer.cesiumWidget.creditContainer.style.display = "none";
+
+// Función para mostrar el modal de ubicación
+function showLocationModal(title, description, position) {
+  console.log('Mostrando modal para:', title);
+  const modal = document.getElementById('locationModalOverlay');
+  const titleEl = document.getElementById('locationModalTitle');
+  const routeBtn = document.getElementById('calculateRouteBtn');
+
+  if (modal && titleEl && routeBtn) {
+    console.log('Elementos del modal encontrados.');
+    titleEl.textContent = title;
+
+    // Clonar y reemplazar el botón para limpiar listeners anteriores
+    const newRouteBtn = routeBtn.cloneNode(true);
+    routeBtn.parentNode.replaceChild(newRouteBtn, routeBtn);
+
+    newRouteBtn.addEventListener('click', () => {
+      console.log('Botón "Cómo llegar" clickeado. Calculando ruta a:', position);
+      calculateRoute(startLonLat, position);
+      closeLocationModal(); // Cierra el modal después de iniciar el cálculo
+    });
+
+    modal.style.display = 'flex';
+  } else {
+    console.error('No se encontraron los elementos del modal. Verifica los IDs en index.html.');
+  }
+}
+
 
 // Mejorar picking sobre materiales translúcidos
 viewer.scene.pickTranslucentDepth = true;
@@ -426,7 +540,6 @@ Cesium.GeoJsonDataSource.load("./data/terreno.geojson", {
     window.cesiumClearSelection = clearSelection;
     window.cesiumOnModalClosed = onModalClosed;
 
-    // Click: abrir modal con datos del polígono
     handler.setInputAction((click) => {
       const picked = viewer.scene.drillPick(click.position) || [];
       let entity = picked.map((p) => p.id).find((id) => id && id.polygon) || null;
