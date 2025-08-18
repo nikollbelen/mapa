@@ -29,7 +29,7 @@ const handleAreasComunes = async () => {
         },
         label: {
           text: location.title,
-          font: 'bold 16px sans-serif',
+          font: 'bold 10px sans-serif',
           fillColor: Cesium.Color.WHITE,
           outlineColor: Cesium.Color.BLACK,
           outlineWidth: 2,
@@ -402,7 +402,7 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
           position: center,
           label: {
             text: number ? number.toString() : '',
-            font: '11pt sans-serif',
+            font: '9pt sans-serif',
             fillColor: Cesium.Color.WHITE,
             outlineColor: Cesium.Color.GRAY,
             outlineWidth: 2,
@@ -420,7 +420,7 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
     });
     const referencePoint = Cesium.Cartesian3.fromDegrees(-71.89764735370906, -17.099287141165803);
     // Rango fijo donde deben mostrarse (ej: hasta 1000 km de altura)
-    const MAX_DISTANCE = 300;
+    const MAX_DISTANCE = 550;
 
     // Evento que se ejecuta antes de cada frame
     viewer.scene.preRender.addEventListener(function () {
