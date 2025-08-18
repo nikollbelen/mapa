@@ -1754,7 +1754,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 82, "number": 82 },
+      "properties": { "fid": 82, "number": "A-1" , "direccion": "Mz. A - Lote 1", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -1768,7 +1768,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 83, "number": 83 },
+      "properties": { "fid": 83, "number": "A-2" , "direccion": "Mz. A - Lote 2", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -1782,7 +1782,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 84, "number": 84 },
+      "properties": { "fid": 84, "number": "B-1" , "direccion": "Mz. B - Lote 1", "area": "133.13 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -1804,7 +1804,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 85, "number": 85 },
+      "properties": { "fid": 85, "number": "B-2" , "direccion": "Mz. B - Lote 2", "area": "132.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -1818,7 +1818,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 86, "number": 86 },
+      "properties": { "fid": 86, "number": "B-3" , "direccion": "Mz. B - Lote 3", "area": "132.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -1832,7 +1832,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 87, "number": 87 },
+      "properties": { "fid": 87, "number": "B-4" , "direccion": "Mz. B - Lote 4", "area": "132.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -1846,7 +1846,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 88, "number": 88 },
+      "properties": { "fid": 88, "number": "B-5" , "direccion": "Mz. B - Lote 5", "area": "132.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -2029,7 +2029,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 101, "number": 101 },
+      "properties": { "fid": 101, "number": "F-1" , "direccion": "Mz. F - Lote 1", "area": "113.94 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [

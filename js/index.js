@@ -377,7 +377,7 @@ const disponible = Cesium.Color.fromCssColorString('#4CAF50');
 // Load terreno polygon from GeoJSON
 Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
   clampToGround: true,
-  stroke: disponible,
+  stroke: Cesium.Color.fromCssColorString('#000000'),
   fill: disponible,
   strokeWidth: 2,
 })
@@ -402,7 +402,7 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
           position: center,
           label: {
             text: number ? number.toString() : '',
-            font: '14pt sans-serif',
+            font: '11pt sans-serif',
             fillColor: Cesium.Color.WHITE,
             outlineColor: Cesium.Color.GRAY,
             outlineWidth: 2,
@@ -834,7 +834,7 @@ const coordinates = [
 
 // Carga la imagen como un material. Usa la ruta a tu archivo .png
 const mykonoMaterial = new Cesium.ImageMaterialProperty({
-  image: './img/img.png',
+  image: './img/img.jpg',
   repeat: new Cesium.Cartesian2(1.0, 1.0) // Asegura que la imagen no se repita
 });
 
@@ -850,6 +850,34 @@ const mykonoLotEntity = viewer.entities.add({
   }
 });
 
+// Coordenadas del polígono
+const polygonCoordinates = [
+  [-71.898877985447115, -17.098770803958921],
+  [-71.897965133484803, -17.098126203614402],
+  [-71.896422217120715, -17.099625276093949],
+  [-71.897406406809651, -17.100330704154146],
+  [-71.898878026501848, -17.098770927123116]
+];
+
+// Función para calcular el centro del polígono
+function calculatePolygonCenter(coordinates) {
+  let sumLon = 0;
+  let sumLat = 0;
+  const numPoints = coordinates.length;
+  
+  coordinates.forEach(coord => {
+    sumLon += coord[0]; // longitud
+    sumLat += coord[1]; // latitud
+  });
+  
+  return {
+    longitude: sumLon / numPoints,
+    latitude: sumLat / numPoints
+  };
+}
+
+// Calcular el centro del polígono
+const polygonCenter = calculatePolygonCenter(polygonCoordinates);
 
 
 // Controles: pan arriba/abajo y zoom in/out mediante botones de la UI
@@ -905,21 +933,36 @@ const mykonoLotEntity = viewer.entities.add({
   if (btnHome) {
     btnHome.addEventListener('click', () => {
       try {
-        const carto = Cesium.Cartographic.fromCartesian(targetLocation.destination);
-        const height = Math.max(400.0, (carto.height || 100.0) * 3.0);
+        // Convertir coordenadas del centro a radianes
+        const centerLon = Cesium.Math.toRadians(polygonCenter.longitude);
+        const centerLat = Cesium.Math.toRadians(polygonCenter.latitude);
+        
+        // Altura para vista superior (ajusta según necesites)
+        const viewHeight = 500.0; // metros sobre el terreno
+        
+        // Volar a la vista superior del polígono
         viewer.camera.flyTo({
-          destination: Cesium.Cartesian3.fromRadians(carto.longitude + 0.0001, carto.latitude + 0.0001, height),
+          destination: Cesium.Cartesian3.fromRadians(centerLon, centerLat, viewHeight),
           orientation: {
-            heading: Cesium.Math.toRadians(0.0),
-            pitch: Cesium.Math.toRadians(-90.0), // top-down
-            roll: 0.0,
+            heading: Cesium.Math.toRadians(0.0),    // Norte arriba
+            pitch: Cesium.Math.toRadians(-93.0),    // Vista completamente vertical (nadir)
+            roll: 0.0,                              // Sin rotación
           },
-          duration: 1.0,
+          duration: 2.0, // Duración de la animación en segundos
         });
-      } catch (e) {
-        // Fallback si falla el cálculo
+        
+        console.log(`Volando a vista superior del polígono: ${polygonCenter.longitude}, ${polygonCenter.latitude}`);
+        
+      } catch (error) {
+        console.error('Error al volar a la vista superior:', error);
+        
+        // Fallback alternativo
         viewer.camera.setView({
-          destination: targetLocation.destination,
+          destination: Cesium.Cartesian3.fromDegrees(
+            polygonCenter.longitude, 
+            polygonCenter.latitude, 
+            1000.0
+          ),
           orientation: {
             heading: Cesium.Math.toRadians(0.0),
             pitch: Cesium.Math.toRadians(-90.0),
