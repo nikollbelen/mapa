@@ -350,7 +350,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 19, "number": 19 },
+      "properties": { "fid": 19, "number": "D-15" , "direccion": "Mz. D - Lote 15", "area": "114.65 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -412,7 +412,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 20, "number": 20 },
+      "properties": { "fid": 20, "number": "D-14" , "direccion": "Mz. D - Lote 14", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -426,7 +426,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 21, "number": 21 },
+      "properties": { "fid": 21, "number": "D-13" , "direccion": "Mz. D - Lote 13", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -440,7 +440,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 22, "number": 22 },
+      "properties": { "fid": 22, "number": "D-12" , "direccion": "Mz. D - Lote 12", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -454,7 +454,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 23, "number": 23 },
+      "properties": { "fid": 23, "number": "D-11" , "direccion": "Mz. D - Lote 11", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -468,7 +468,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 24, "number": 24 },
+      "properties": { "fid": 24, "number": "D-10" , "direccion": "Mz. D - Lote 10", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -482,7 +482,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 25, "number": 25 },
+      "properties": { "fid": 25, "number": "D-9" , "direccion": "Mz. D - Lote 9", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -496,7 +496,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 26, "number": 26 },
+      "properties": { "fid": 26, "number": "D-8" , "direccion": "Mz. D - Lote 8", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -510,7 +510,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 27, "number": 27 },
+      "properties": { "fid": 27, "number": "D-7" , "direccion": "Mz. D - Lote 7", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -524,7 +524,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 28, "number": 28 },
+      "properties": { "fid": 28, "number": "D-6" , "direccion": "Mz. D - Lote 6", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -538,7 +538,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 29, "number": 29 },
+      "properties": { "fid": 29, "number": "D-5" , "direccion": "Mz. D - Lote 5", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -552,7 +552,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 30, "number": 30 },
+      "properties": { "fid": 30, "number": "D-4" , "direccion": "Mz. D - Lote 4", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -566,7 +566,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 31, "number": 31 },
+      "properties": { "fid": 31, "number": "D-3" , "direccion": "Mz. D - Lote 3", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -580,7 +580,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 32, "number": 32 },
+      "properties": { "fid": 32, "number": "D-2" , "direccion": "Mz. D - Lote 2", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -594,7 +594,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 33, "number": 33 },
+      "properties": { "fid": 33, "number": "D-1" , "direccion": "Mz. D - Lote 1", "area": "114.65 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -650,7 +650,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 34, "number": 34 },
+      "properties": { "fid": 34, "number": "D-16" , "direccion": "Mz. D - Lote 16", "area": "112.43 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -707,7 +707,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 35, "number": 35 },
+      "properties": { "fid": 35, "number": "D-17" , "direccion": "Mz. D - Lote 17", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -721,7 +721,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 36, "number": 36 },
+      "properties": { "fid": 36, "number": "D-18" , "direccion": "Mz. D - Lote 18", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -735,7 +735,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 37, "number": 37 },
+      "properties": { "fid": 37, "number": "D-19" , "direccion": "Mz. D - Lote 19", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -749,7 +749,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 38, "number": 38 },
+      "properties": { "fid": 38, "number": "D-20" , "direccion": "Mz. D - Lote 20", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -763,7 +763,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 39, "number": 39 },
+      "properties": { "fid": 39, "number": "D-21" , "direccion": "Mz. D - Lote 21", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -777,7 +777,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 40, "number": 40 },
+      "properties": { "fid": 40, "number": "D-22" , "direccion": "Mz. D - Lote 22", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -791,7 +791,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 41, "number": 41 },
+      "properties": { "fid": 41, "number": "D-23" , "direccion": "Mz. D - Lote 23", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -805,7 +805,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 42, "number": 42 },
+      "properties": { "fid": 42, "number": "D-24" , "direccion": "Mz. D - Lote 24", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -819,7 +819,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 43, "number": 43 },
+      "properties": { "fid": 43, "number": "D-25" , "direccion": "Mz. D - Lote 25", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -833,7 +833,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 44, "number": 44 },
+      "properties": { "fid": 44, "number": "D-26" , "direccion": "Mz. D - Lote 26", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -847,7 +847,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 45, "number": 45 },
+      "properties": { "fid": 45, "number": "D-27" , "direccion": "Mz. D - Lote 27", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -861,7 +861,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 46, "number": 46 },
+      "properties": { "fid": 46, "number": "D-28" , "direccion": "Mz. D - Lote 28", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -875,7 +875,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 47, "number": 47 },
+      "properties": { "fid": 47, "number": "D-29" , "direccion": "Mz. D - Lote 29", "area": "110.00 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
@@ -889,7 +889,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "fid": 48, "number": 48 },
+      "properties": { "fid": 48, "number": "D-30" , "direccion": "Mz. D - Lote 30", "area": "114.66 m2" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [ [
