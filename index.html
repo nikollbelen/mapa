@@ -462,10 +462,168 @@
                     </div>
                 </div>
 
-            <button class="whatsapp-btn">
-                💬 Contáctanos por WhatsApp
-            </button>
+                <button class="whatsapp-btn">
+                    💬 Contáctanos por WhatsApp
+                </button>
+            </div>
         </div>
+    </div>
+
+    <style>
+
+        .bottom-menu {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 15px 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .tags-section {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .tag {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tag.disponible {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .tag.reservado {
+            background-color: #FF9800;
+            color: white;
+        }
+
+        .tag.vendido {
+            background-color: #F44336;
+            color: white;
+        }
+
+        .tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .buttons-section {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .menu-button {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            background: #f8f9fa;
+        }
+
+        .menu-button i {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .menu-button.home i {
+            color: #4CAF50;
+        }
+
+        .menu-button.up i {
+            color: #2196F3;
+        }
+
+        .menu-button.down i {
+            color: #2196F3;
+        }
+
+        .menu-button.add i {
+            color: #FF9800;
+        }
+
+        .menu-button.remove i {
+            color: #F44336;
+        }
+
+        .menu-button.view3d i {
+            color: #9C27B0;
+        }
+
+        .menu-button.grid i {
+            color: #607D8B;
+        }
+
+        /* Efecto de presionado */
+        .menu-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .tag:active {
+            transform: translateY(1px);
+        }
+    </style>
+
+<div class="bottom-menu">
+    <!-- Tags superiores -->
+    <div class="tags-section">
+        <button class="tag disponible">Disponible</button>
+        <button class="tag reservado">Reservado</button>
+        <button class="tag vendido">Vendido / Bloqueado</button>
+    </div>
+    
+    <!-- Botones inferiores -->
+    <div class="buttons-section">
+        <button id="home" class="menu-button home">
+            <i class="fas fa-home"></i>
+        </button>
+        <button id="up" class="menu-button up">
+            <i class="fas fa-chevron-up"></i>
+        </button>
+        <button id="down" class="menu-button down">
+            <i class="fas fa-chevron-down"></i>
+        </button>
+        <button id="zoomIn" class="menu-button add">
+            <i class="fas fa-plus"></i>
+        </button>
+        <button id="zoomOut" class="menu-button remove">
+            <i class="fas fa-minus"></i>
+        </button>
+        <button id="view3d" class="menu-button view3d">
+            <i class="fas fa-cube"></i>
+        </button>
+        <button id="grid" class="menu-button grid">
+            <i class="fas fa-th"></i>
+        </button>
     </div>
 </div>
 
