@@ -379,7 +379,7 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
   clampToGround: true,
   stroke: Cesium.Color.fromCssColorString('#000000'),
   fill: disponible,
-  strokeWidth: 2,
+  strokeWidth: 4,
 })
   .then((ds) => {
     // Add labels to each terrain polygon
