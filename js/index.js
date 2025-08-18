@@ -8,9 +8,10 @@ const handleAreasComunes = async () => {
     await loadLocationData();
   }
 
+  document.getElementById('commonAreasModalOverlay').style.display = 'flex';
   // Remover marcadores existentes de áreas comunes
   const entitiesToRemove = viewer.entities.values.filter(entity =>
-    entity.id && entity.id.startsWith("area_comun_")
+    entity.id && entity.id.startsWith("area_comun_") || entity.id === "marcador_1" || entity.id === "marcador_2"
   );
   entitiesToRemove.forEach(entity => viewer.entities.remove(entity));
 
@@ -34,7 +35,8 @@ const handleAreasComunes = async () => {
           outlineWidth: 2,
           style: Cesium.LabelStyle.FILL_AND_OUTLINE,
           verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-          pixelOffset: new Cesium.Cartesian2(0, 0)
+          pixelOffset: new Cesium.Cartesian2(0, 0),
+          distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0.0, 3000.0)
         }
       });
     });
@@ -76,7 +78,7 @@ const handleEntorno = async () => {
 
   // Remover solo los marcadores del entorno si existen
   const entitiesToRemove = viewer.entities.values.filter(entity =>
-    entity.id === "marcador_1" || entity.id === "marcador_2"
+    entity.id === "marcador_1" || entity.id === "marcador_2" || entity.id.startsWith("area_comun_")
   );
   entitiesToRemove.forEach(entity => viewer.entities.remove(entity));
 
@@ -109,6 +111,9 @@ const setupNavButtons = () => {
 
   navButtons.forEach(button => {
     button.addEventListener('click', () => {
+      if (window.cleanupAll) {
+        window.cleanupAll();
+      }
       navButtons.forEach(btn => btn.classList.remove('active'));
       button.classList.add('active');
       entornoButton.classList.remove('active');
@@ -124,6 +129,9 @@ const setupNavButtons = () => {
   // Agregar evento click al botón de Entorno
   if (entornoButton) {
     entornoButton.addEventListener('click', () => {
+      if (window.cleanupAll) {
+        window.cleanupAll();
+      }
       navButtons.forEach(btn => btn.classList.remove('active'));
       entornoButton.classList.add('active');
       handleEntorno();
@@ -256,7 +264,8 @@ async function createLine() {
           style: Cesium.LabelStyle.FILL_AND_OUTLINE,
           verticalOrigin: Cesium.VerticalOrigin.TOP,
           pixelOffset: new Cesium.Cartesian2(0, 0),
-          disableDepthTestDistance: Number.POSITIVE_INFINITY
+          disableDepthTestDistance: Number.POSITIVE_INFINITY,
+          distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0.0, 5000.0)
         },
         properties: {
           type: location.id,
@@ -313,7 +322,9 @@ async function loadLocationData() {
 
 // Cargar los datos cuando se inicia la aplicación
 loadLocationData();
-
+function showCommonAreasModal() {
+  document.getElementById('commonAreasModalOverlay').style.display = 'flex';
+}
 // Función para mostrar el modal de ubicación
 function showLocationModal(title, description, coordinates) {
   const modal = document.getElementById('locationModalOverlay');

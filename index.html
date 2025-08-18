@@ -7,6 +7,7 @@
     <script src="https://cesium.com/downloads/cesiumjs/releases/1.115/Build/Cesium/Cesium.js"></script>
     <link href="https://cesium.com/downloads/cesiumjs/releases/1.115/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/modal.css">
 </head>
 
 <body>
@@ -159,6 +160,7 @@
                 transform: translateX(100%);
                 opacity: 0;
             }
+
             to {
                 transform: translateX(0);
                 opacity: 1;
@@ -403,214 +405,269 @@
         }
     </style>
 
-<div class="modal-overlay" id="modalOverlay">
-    <div class="modal">
-        <div class="modal-header">
-            <button class="back-btn">
-                
-            </button>
-            <button class="close-btn" onclick="closeModal()">
-                ✕
-            </button>
-        </div>
-        
-        <div class="modal-content">
-            <h1 class="property-title" id="modalTitle">PROYECTO EJEMPLO</h1>
-            
-            <div class="property-subtitle">
-                <span class="lot-info" id="modalLot">Mz. A - Lote 15</span>
-                <span class="status-badge" id="modalStatus">Disponible</span>
-            </div>
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <button class="back-btn">
 
-            <div class="main-info">
-                <div class="info-row">
-                    <span class="info-label">Precio</span>
-                    <span class="info-value price" id="modalPrice">$ 45,000.00</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Área</span>
-                    <span class="info-value" id="modalArea">250.00 m²</span>
-                </div>
-            </div>
-
-            <div class="measurements">
-                <div class="measurement-item">
-                    <div class="measurement-icon">←</div>
-                    <span class="measurement-label">Izquierda</span>
-                    <span class="measurement-value" id="modalLeft">15.50 ML</span>
-                </div>
-                
-                <div class="measurement-item">
-                    <div class="measurement-icon">→</div>
-                    <span class="measurement-label">Derecha</span>
-                    <span class="measurement-value" id="modalRight">15.50 ML</span>
-                </div>
-                
-                <div class="measurement-item">
-                    <div class="measurement-icon">↔</div>
-                    <span class="measurement-label">Frente</span>
-                    <span class="measurement-value" id="modalFront">16.12 ML</span>
-                </div>
-                
-                <div class="measurement-item">
-                    <div class="measurement-icon">↕</div>
-                    <span class="measurement-label">Fondo</span>
-                    <span class="measurement-value" id="modalBack">15.50 ML</span>
-                </div>
-            </div>
-
-            <button class="whatsapp-btn">
-                💬 Contáctanos por WhatsApp
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal para Ubicaciones -->
-<div class="modal-overlay" id="locationModalOverlay" style="display: none;">
-    <div class="modal">
-        <div class="modal-header">
-            <button class="close-btn" onclick="closeLocationModal()">
-                ✕
-            </button>
-        </div>
-        <div class="modal-content">
-            <h1 class="property-title" id="locationModalTitle"></h1>
-            <div class="location-image">
-                <img id="locationModalImage" src="" alt="" style="width: 100%; border-radius: 8px; margin: 16px 0;">
-                <button class="expand-image-btn" onclick="expandImage()">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <path d="M4 4h16v16H4V4z" stroke="white" stroke-width="2"/>
-                        <path d="M9 9l6 6M15 9l-6 6" stroke="white" stroke-width="2"/>
-                    </svg>
+                </button>
+                <button class="close-btn" onclick="closeModal()">
+                    ✕
                 </button>
             </div>
-            <div class="location-details">
-                <h2 class="location-subtitle">Dirección:</h2>
-                <p class="location-address" id="locationModalAddress"></p>
-                <div class="info-row">
-                    <button class="link-button" id="calculateRouteBtn">
-                        ¿Cómo llegar?
+
+            <div class="modal-content">
+                <h1 class="property-title" id="modalTitle">PROYECTO EJEMPLO</h1>
+
+                <div class="property-subtitle">
+                    <span class="lot-info" id="modalLot">Mz. A - Lote 15</span>
+                    <span class="status-badge" id="modalStatus">Disponible</span>
+                </div>
+
+                <div class="main-info">
+                    <div class="info-row">
+                        <span class="info-label">Precio</span>
+                        <span class="info-value price" id="modalPrice">$ 45,000.00</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Área</span>
+                        <span class="info-value" id="modalArea">250.00 m²</span>
+                    </div>
+                </div>
+
+                <div class="measurements">
+                    <div class="measurement-item">
+                        <div class="measurement-icon">←</div>
+                        <span class="measurement-label">Izquierda</span>
+                        <span class="measurement-value" id="modalLeft">15.50 ML</span>
+                    </div>
+
+                    <div class="measurement-item">
+                        <div class="measurement-icon">→</div>
+                        <span class="measurement-label">Derecha</span>
+                        <span class="measurement-value" id="modalRight">15.50 ML</span>
+                    </div>
+
+                    <div class="measurement-item">
+                        <div class="measurement-icon">↔</div>
+                        <span class="measurement-label">Frente</span>
+                        <span class="measurement-value" id="modalFront">16.12 ML</span>
+                    </div>
+
+                    <div class="measurement-item">
+                        <div class="measurement-icon">↕</div>
+                        <span class="measurement-label">Fondo</span>
+                        <span class="measurement-value" id="modalBack">15.50 ML</span>
+                    </div>
+                </div>
+
+                <button class="whatsapp-btn">
+                    💬 Contáctanos por WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Ubicaciones -->
+    <div class="modal-overlay" id="locationModalOverlay" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <button class="close-btn" onclick="closeLocationModal()">
+                    ✕
+                </button>
+            </div>
+            <div class="modal-content">
+                <h1 class="property-title" id="locationModalTitle"></h1>
+                <div class="location-image">
+                    <img id="locationModalImage" src="" alt="" style="width: 100%; border-radius: 8px; margin: 16px 0;">
+                    <button class="expand-image-btn" onclick="expandImage()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M4 4h16v16H4V4z" stroke="white" stroke-width="2" />
+                            <path d="M9 9l6 6M15 9l-6 6" stroke="white" stroke-width="2" />
+                        </svg>
                     </button>
-                    <div class="time-estimate">
-                        <span class="time-icon">⏱️</span>
-                        <span id="locationModalTime"></span>
+                </div>
+                <div class="location-details">
+                    <h2 class="location-subtitle">Dirección:</h2>
+                    <p class="location-address" id="locationModalAddress"></p>
+                    <div class="info-row">
+                        <button class="link-button" id="calculateRouteBtn">
+                            ¿Cómo llegar?
+                        </button>
+                        <div class="time-estimate">
+                            <span class="time-icon">⏱️</span>
+                            <span id="locationModalTime"></span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<style>
-.location-image {
-    position: relative;
-    width: 100%;
-    margin: 16px 0;
-}
+    <!-- Modal para Áreas comunes -->
+    <div class="modal-overlay" id="commonAreasModalOverlay" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <button class="close-btn" onclick="closeCommonAreasModal()">
+                    ✕
+                </button>
+            </div>
+            <div class="modal-content">
+                <h2 class="menu-title">SANTORINI</h2>
+                
+                <!-- Pórtico -->
+                <div class="menu-section">
+                    <div class="menu-header">🏛️ PÓRTICO</div>
+                    <div class="menu-item">
+                        <span>Pórtico de ingreso</span>
+                        <i>➔</i>
+                    </div>
+                </div>
+                
+                <!-- Comunidad -->
+                <div class="menu-section">
+                    <div class="menu-header">🏘️ COMUNIDAD</div>
+                    <div class="menu-item"><span>Parque</span><i>➔</i></div>
+                    <div class="menu-item"><span>Club House</span><i>➔</i></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-.expand-image-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: rgba(0, 0, 0, 0.5);
-    border: none;
-    border-radius: 4px;
-    padding: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.expand-image-btn:hover {
-    background: rgba(0, 0, 0, 0.7);
-}
-
-.location-details {
-    margin: 16px 0;
-}
-
-.location-subtitle {
-    font-size: 16px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 8px;
-}
-
-.location-address {
-    color: #666;
-    margin-bottom: 16px;
-}
-
-.time-estimate {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #666;
-    margin-bottom: 24px;
-}
-
-.info-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 12px;
-    padding: 4px 0;
-}
-
-.time-estimate {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: #666;
-    font-size: 14px;
-}
-
-.link-button {
-    background: none;
-    border: 1px solid #2c4575;
-    color: #2c4575;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    padding: 4px 12px;
-    border-radius: 16px;
-    transition: all 0.2s ease;
-}
-
-.link-button:hover {
-    background-color: rgba(44, 69, 117, 0.05);
-}
-
-.link-button:active {
-    background-color: rgba(44, 69, 117, 0.1);
-}
-</style>
-
-<script>
-    function closeLocationModal() {
-        document.getElementById('locationModalOverlay').style.display = 'none';
-    }
-
-    function closeModal() {
-        document.querySelector('.modal-overlay').style.display = 'none';
-        // Limpiar selección del polígono si existe
-        if (window.cesiumClearSelection) {
-            try { window.cesiumClearSelection(); } catch (e) { /* noop */ }
+    <style>
+        .location-image {
+            position: relative;
+            width: 100%;
+            margin: 16px 0;
         }
-        // Notificar cierre para suprimir hover momentáneo
-        if (window.cesiumOnModalClosed) {
-            try { window.cesiumOnModalClosed(); } catch (e) { /* noop */ }
+
+        .expand-image-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 4px;
+            padding: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
         }
-    }
+
+        .expand-image-btn:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .location-details {
+            margin: 16px 0;
+        }
+
+        .location-subtitle {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .location-address {
+            color: #666;
+            margin-bottom: 16px;
+        }
+
+        .time-estimate {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+            margin-bottom: 24px;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 12px;
+            padding: 4px 0;
+        }
+
+        .time-estimate {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .link-button {
+            background: none;
+            border: 1px solid #2c4575;
+            color: #2c4575;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 4px 12px;
+            border-radius: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .link-button:hover {
+            background-color: rgba(44, 69, 117, 0.05);
+        }
+
+        .link-button:active {
+            background-color: rgba(44, 69, 117, 0.1);
+        }
+    </style>
+
+    <script>
+        function closeLocationModal() {
+            document.getElementById('locationModalOverlay').style.display = 'none';
+        }
+        
+        function closeCommonAreasModal() {
+            document.getElementById('commonAreasModalOverlay').style.display = 'none';
+        }
+
+        // Nueva función para limpiar todos los modales
+        function cleanupAll() {
+            // Cerrar todos los modales
+            document.getElementById('commonAreasModalOverlay').style.display = 'none';
+            document.getElementById('locationModalOverlay').style.display = 'none';
+            document.getElementById('modalOverlay').style.display = 'none';
+            
+            // Notificar al viewer que el modal se cerró (para limpiar selecciones)
+            if (window.cesiumOnModalClosed) {
+                try { window.cesiumOnModalClosed(); } catch (e) { /* noop */ }
+            }
+            
+            // Limpiar selección del polígono si existe
+            if (window.cesiumClearSelection) {
+                try { window.cesiumClearSelection(); } catch (e) { /* noop */ }
+            }
+        }
+        
+        // Exponer la función al objeto window para que pueda ser llamada desde index.js
+        window.cleanupAll = cleanupAll;
+
+        function closeModal() {
+            document.querySelector('.modal-overlay').style.display = 'none';
+            // Limpiar selección del polígono si existe
+            if (window.cesiumClearSelection) {
+                try { window.cesiumClearSelection(); } catch (e) { /* noop */ }
+            }
+            // Notificar cierre para suprimir hover momentáneo
+            if (window.cesiumOnModalClosed) {
+                try { window.cesiumOnModalClosed(); } catch (e) { /* noop */ }
+            }
+        }
 
 
-    // Cerrar con tecla Escape
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            closeModal();
-        }
-    });
-</script>
+        // Cerrar con tecla Escape
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
 </body>
 
 </html>
