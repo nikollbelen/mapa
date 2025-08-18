@@ -120,29 +120,67 @@ viewer.cesiumWidget.creditContainer.style.display = "none";
 viewer.scene.pickTranslucentDepth = true;
 
 
-
 // Ocultar modal al cargar; se mostrará al hacer click en un polígono (excepto fid=1)
 const modalEl = document.getElementById("modalOverlay");
 if (modalEl) modalEl.style.display = "none";
 
-trees.features.forEach((feature) => {
-  createModel(
-    viewer,
-    url.treeGlb,
-    feature.geometry.coordinates[0],
-    feature.geometry.coordinates[1],
-    0
-  );
-});
+// trees.features.forEach((feature) => {
+//   createModel(
+//     viewer,
+//     url.treeGlb,
+//     feature.geometry.coordinates[0],
+//     feature.geometry.coordinates[1],
+//     0
+//   );
+// });
+
+const disponible = Cesium.Color.fromCssColorString('#4CAF50');
 
 // Load terreno polygon from GeoJSON
 Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
   clampToGround: true,
-  stroke: Cesium.Color.ORANGE,
-  fill: Cesium.Color.ORANGE.withAlpha(0.4),
+  stroke: disponible,
+  fill: disponible.withAlpha(0.4),
   strokeWidth: 2,
 })
   .then((ds) => {
+    // Add labels to each terrain polygon
+    const entities = ds.entities.values;
+    
+    entities.forEach(entity => {
+      // Only process if it's a polygon and has a number property
+      if (entity.polygon && entity.properties && entity.properties.number) {
+        // Get the polygon positions
+        const positions = entity.polygon.hierarchy.getValue(Cesium.JulianDate.now()).positions;
+        
+        // Calculate the center of the polygon
+        const center = Cesium.BoundingSphere.fromPoints(positions).center;
+        
+        // Get the number from properties
+        const number = entity.properties.number.getValue();
+        
+        // Add a label at the center of the polygon
+        viewer.entities.add({
+          position: center,
+          label: {
+            text: number ? number.toString() : '',
+            font: '14pt sans-serif',
+            fillColor: Cesium.Color.WHITE,
+            outlineColor: Cesium.Color.GRAY,
+            outlineWidth: 2,
+            style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+            verticalOrigin: Cesium.VerticalOrigin.CENTER,
+            pixelOffset: new Cesium.Cartesian2(0, 0),
+            disableDepthTestDistance: Number.POSITIVE_INFINITY,
+            scale: 1.0,
+            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+            show: !!number // Only show label if number exists
+          }
+        });
+      }
+    });
+    
+    // Add the data source to the viewer after processing
     viewer.dataSources.add(ds);
     // Estilizar: polígono con fid=1 en gris, el resto en naranja
     try {
@@ -154,9 +192,9 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
           fid = typeof e.properties.fid.getValue === "function" ? e.properties.fid.getValue() : e.properties.fid;
         }
         const isLargest = fid === 0;
-        e.polygon.material = (isLargest ? Cesium.Color.GRAY : Cesium.Color.ORANGE).withAlpha(0.5);
+        e.polygon.material = isLargest ? Cesium.Color.GRAY.withAlpha(0) : fid === 3 ? disponible.withAlpha(0) : disponible.withAlpha(0.5);
         e.polygon.outline = true;
-        e.polygon.outlineColor = isLargest ? Cesium.Color.DARKGRAY : Cesium.Color.ORANGE;
+        e.polygon.outlineColor = isLargest ? Cesium.Color.DARKGRAY.withAlpha(0) : fid === 3 ? disponible.withAlpha(0) : disponible;
         e.polygon.height = 0.1;
         e.polygon.heightReference = Cesium.HeightReference.RELATIVE_TO_GROUND
         // Guardar material base para restaurar correctamente tras hover/selección
@@ -208,6 +246,68 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
     let selectedOriginalMaterial = null;
     let modalOpen = false;
     let hoverSuppressUntil = 0; // timestamp (ms) para evitar hover inmediato tras cerrar modal
+
+    // Crear una pared alrededor del polígono con fid = 0 (ahora que helpers están definidos)
+    try {
+      const poly0 = ds.entities.values.find((e) => e.polygon && getFid(e) === 0);
+      if (poly0) {
+        // Obtener anillo del polígono en cartográfico (rad)
+        const ring = getPolygonPositionsCartographic(poly0);
+        // Eliminar punto duplicado de cierre si existe
+        let cartos = ring.slice();
+        if (cartos.length >= 2) {
+          const first = cartos[0];
+          const last = cartos[cartos.length - 1];
+          const almostEqual = (a, b) => Math.abs(a - b) < 1e-10;
+          if (almostEqual(first.latitude, last.latitude) && almostEqual(first.longitude, last.longitude)) {
+            cartos = cartos.slice(0, -1);
+          }
+        }
+
+        // Construir posiciones a nivel del suelo y alturas de la pared
+        const positions = cartos.map((c) => Cesium.Cartesian3.fromRadians(c.longitude, c.latitude, 0.0));
+        const minimumHeights = new Array(positions.length).fill(0.0);
+        const wallHeightMeters = 3.0; // Altura de la pared (ajusta aquí a la altura real de tu pared)
+        const maximumHeights = new Array(positions.length).fill(wallHeightMeters);
+
+        // Calcular perímetro para ajustar el tileado y mantener cuadrados
+        let perimeterMeters = 0.0;
+        for (let i = 0; i < cartos.length; i++) {
+          const a = cartos[i];
+          const b = cartos[(i + 1) % cartos.length];
+          const g = new Cesium.EllipsoidGeodesic(a, b);
+          perimeterMeters += g.surfaceDistance;
+        }
+        // Tamaño del tile en metros: igual a la altura de la pared para que 1 tile = altura completa (cuadrado)
+        const tileSizeMeters = wallHeightMeters;
+        const repeatX = Math.max(1.0, perimeterMeters / Math.max(0.1, tileSizeMeters));
+        const repeatY = Math.max(1.0, wallHeightMeters / Math.max(0.1, tileSizeMeters));
+
+        const wallEntity = viewer.entities.add({
+          name: "Pared fid=0",
+          wall: {
+            positions,
+            minimumHeights,
+            maximumHeights,
+            // Textura desde tu archivo local SVG (cuadrado). Se calcula repeat para que quede en tiles cuadrados.
+            material: new Cesium.ImageMaterialProperty({
+              image: './img/pared.svg',
+              repeat: new Cesium.Cartesian2(repeatX, repeatY),
+              color: Cesium.Color.WHITE.withAlpha(1.0)
+            }),
+            outline: true,
+            outlineColor: Cesium.Color.BLACK,
+          },
+        });
+        // Log y acercar para asegurar visibilidad
+        console.log('Pared creada para fid=0:', wallEntity);
+        try { viewer.zoomTo(wallEntity); } catch (_) { /* noop */ }
+        // Forzar render en requestRenderMode
+        try { viewer.scene.requestRender(); } catch (_) { /* noop */ }
+      }
+    } catch (e) {
+      console.error("No se pudo crear la pared para fid=0:", e);
+    }
 
     // Utilidades de formato y cálculo
     const metersToML = (m) => `${m.toFixed(2)} ML`;
@@ -332,11 +432,11 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
         const cartOnGlobe = viewer.scene.pickPosition(movement.endPosition);
         if (cartOnGlobe) {
           const carto = Cesium.Cartographic.fromCartesian(cartOnGlobe);
-          // Buscar el primer polígono (excepto fid=1) cuyo relleno contenga el punto
+          // Buscar el primer polígono (excepto fid=1 y fid=0) cuyo relleno contenga el punto
           const polyEntity = ds.entities.values.find((e) => {
             if (!e.polygon) return false;
             const fid = getFid(e);
-            if (fid === 1) return false;
+            if (fid === 1 || fid === 0) return false;
             const ring = getPolygonPositionsCartographic(e);
             return pointInPolygon(carto, ring);
           });
@@ -359,14 +459,15 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
 
       if (entity) {
         const fid = getFid(entity);
-        if (fid !== 1) {
+        if (fid !== 3 && fid !== undefined) {
+          console.log("fid " + fid);
           viewer.scene.canvas.style.cursor = "pointer";
           // Evitar resaltar si ya es el seleccionado
           if (highlighted !== entity && entity !== selected) {
             highlighted = entity;
             // Guardar el material base como referencia para restaurar
             highlightedOriginalMaterial = entity._baseMaterial || entity.polygon.material;
-            entity.polygon.material = Cesium.Color.YELLOW.withAlpha(0.6);
+            entity.polygon.material = Cesium.Color.WHITE.withAlpha(0.6);
             viewer.scene.requestRender();
           }
         } else {
@@ -464,6 +565,34 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
 
 // Fly the camera to San Francisco at the given longitude, latitude, and height.
 viewer.camera.flyTo(targetLocation);
+
+const coordinates = [
+  -71.898877985447115, -17.098770803958921,
+  -71.897965133484803, -17.098126203614402,
+  -71.896422217120715, -17.099625276093949,
+  -71.897406406809651, -17.100330704154146,
+  -71.898878026501848, -17.098770927123116
+];
+
+// Carga la imagen como un material. Usa la ruta a tu archivo .png
+const mykonoMaterial = new Cesium.ImageMaterialProperty({
+  image: './img/img.png',
+  repeat: new Cesium.Cartesian2(1.0, 1.0) // Asegura que la imagen no se repita
+});
+
+// Agrega la entidad de polígono al visor
+const mykonoLotEntity = viewer.entities.add({
+  polygon: {
+    // Convierte el array de coordenadas en un objeto de jerarquía de polígono
+    hierarchy: Cesium.Cartesian3.fromDegreesArray(coordinates),
+    // Asigna el material de imagen
+    material: mykonoMaterial,
+    // Esto hace que el polígono se adhiera al terreno
+    classificationType: Cesium.ClassificationType.TERRAIN
+  }
+});
+
+
 
 // Controles: pan arriba/abajo y zoom in/out mediante botones de la UI
 (() => {
