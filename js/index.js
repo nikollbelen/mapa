@@ -367,7 +367,7 @@ const disponible = Cesium.Color.fromCssColorString('#4CAF50');
 Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
   clampToGround: true,
   stroke: disponible,
-  fill: disponible.withAlpha(0.4),
+  fill: disponible,
   strokeWidth: 2,
 })
   .then((ds) => {
@@ -419,7 +419,7 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
           fid = typeof e.properties.fid.getValue === "function" ? e.properties.fid.getValue() : e.properties.fid;
         }
         const isLargest = fid === 0;
-        e.polygon.material = isLargest ? Cesium.Color.GRAY.withAlpha(0) : fid === 3 ? disponible.withAlpha(0) : disponible.withAlpha(0.5);
+        e.polygon.material = isLargest ? Cesium.Color.GRAY.withAlpha(0) : fid === 3 ? disponible.withAlpha(0) : disponible;
         e.polygon.outline = true;
         e.polygon.outlineColor = isLargest ? Cesium.Color.DARKGRAY.withAlpha(0) : fid === 3 ? disponible.withAlpha(0) : disponible;
         e.polygon.height = 0.1;
@@ -440,6 +440,24 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
       if (!entity || !entity.properties) return undefined;
       const p = entity.properties.fid;
       return typeof p?.getValue === "function" ? p.getValue() : p;
+    };
+
+    const getNumber = (entity) => {
+      if (!entity || !entity.properties) return undefined;
+      const number = entity.properties.number;
+      return typeof number?.getValue === "function" ? number.getValue() : number;
+    };
+
+    const getDireccion = (entity) => {
+      if (!entity || !entity.properties) return undefined;
+      const direccion = entity.properties.direccion;
+      return typeof direccion?.getValue === "function" ? direccion.getValue() : direccion;
+    };
+
+    const getArea = (entity) => {
+      if (!entity || !entity.properties) return undefined;
+      const area = entity.properties.area;
+      return typeof area?.getValue === "function" ? area.getValue() : area;
     };
 
     // Helpers: obtener posiciones del polígono y prueba punto-en-polígono
@@ -494,7 +512,7 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
         // Construir posiciones a nivel del suelo y alturas de la pared
         const positions = cartos.map((c) => Cesium.Cartesian3.fromRadians(c.longitude, c.latitude, 0.0));
         const minimumHeights = new Array(positions.length).fill(0.0);
-        const wallHeightMeters = 3.0; // Altura de la pared (ajusta aquí a la altura real de tu pared)
+        const wallHeightMeters = 1.0; // Altura de la pared (ajusta aquí a la altura real de tu pared)
         const maximumHeights = new Array(positions.length).fill(wallHeightMeters);
 
         // Calcular perímetro para ajustar el tileado y mantener cuadrados
@@ -587,6 +605,9 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
 
     const updateModalWithEntity = (entity) => {
       const fid = getFid(entity);
+      const number = getNumber(entity);
+      const direccion = getDireccion(entity);
+      const areaLote = getArea(entity);
       const props = entity.properties || {};
 
       const titleEl = document.getElementById('modalTitle');
@@ -600,18 +621,18 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
       const backEl = document.getElementById('modalBack');
 
       // Títulos básicos
-      if (titleEl) titleEl.textContent = `Lote ${fid ?? ''}`.trim();
-      if (lotEl) lotEl.textContent = `FID ${fid ?? '-'}`;
+      if (titleEl) titleEl.textContent = `MIKONOS`.trim();
+      if (lotEl) lotEl.textContent = `${direccion ?? ''}`;
 
       // Status y precio desde propiedades si existen
       const statusVal = typeof props.status?.getValue === 'function' ? props.status.getValue() : props.status;
       const priceVal = typeof props.price?.getValue === 'function' ? props.price.getValue() : props.price;
       if (statusEl) statusEl.textContent = statusVal || 'Disponible';
-      if (priceEl) priceEl.textContent = priceVal ? `${priceVal}` : '$ -';
+      if (priceEl) priceEl.textContent = priceVal ? `${priceVal}` : '$ 27,947.50';
 
       // Área y lados
       const { area, edges } = computeAreaAndEdges(entity);
-      if (areaEl) areaEl.textContent = sqm(area);
+      if (areaEl) areaEl.textContent = areaLote;
 
       // Asignar lados si hay al menos 4
       if (edges.length >= 4) {
@@ -687,14 +708,13 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
       if (entity) {
         const fid = getFid(entity);
         if (fid !== 3 && fid !== undefined) {
-          console.log("fid " + fid);
           viewer.scene.canvas.style.cursor = "pointer";
           // Evitar resaltar si ya es el seleccionado
           if (highlighted !== entity && entity !== selected) {
             highlighted = entity;
             // Guardar el material base como referencia para restaurar
             highlightedOriginalMaterial = entity._baseMaterial || entity.polygon.material;
-            entity.polygon.material = Cesium.Color.WHITE.withAlpha(0.6);
+            entity.polygon.material = disponible.withAlpha(0.5);
             viewer.scene.requestRender();
           }
         } else {
@@ -766,7 +786,7 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
           const polyEntity = ds.entities.values.find((e) => {
             if (!e.polygon) return false;
             const fid = getFid(e);
-            if (fid === 1) return false;
+            if (fid === 0) return false;
             const ring = getPolygonPositionsCartographic(e);
             return pointInPolygon(carto, ring);
           });
@@ -776,7 +796,8 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
 
       if (!entity) return;
       const fid = getFid(entity);
-      if (fid === 1) return; // excluir
+      if (fid === undefined) return; // excluir
+      console.log("fid " + fid);
 
       // Actualizar modal y mostrar
       updateModalWithEntity(entity);
