@@ -1,0 +1,53 @@
+/* Estilos para el menú de Santorini */
+.menu-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #1c335e;
+    margin-bottom: 20px;
+}
+
+.menu-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.menu-header {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #1c335e;
+    margin-bottom: 12px;
+}
+
+.menu-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-size: 14px;
+    color: #444;
+    margin-bottom: 10px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.menu-item:hover {
+    background: #f1f5fb;
+    transform: translateY(-2px);
+}
+
+.menu-item span {
+    font-weight: 500;
+}
+
+.menu-item i {
+    font-size: 14px;
+    color: #888;
+}
