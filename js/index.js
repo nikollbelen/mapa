@@ -2,6 +2,141 @@ import { cesiumAccessToken, targetLocation, url } from "./cesiumConfig.js";
 import { trees } from "./coordinates.js";
 import { createModel } from "./CesiumFun.js";
 
+// No necesitamos variables globales para los marcadores ya que se manejan a través de viewer.entities// Funciones específicas para cada tipo de visualización
+const handleAreasComunes = async () => {
+  if (!locationData) {
+    await loadLocationData();
+  }
+
+  // Remover marcadores existentes de áreas comunes
+  const entitiesToRemove = viewer.entities.values.filter(entity =>
+    entity.id && entity.id.startsWith("area_comun_")
+  );
+  entitiesToRemove.forEach(entity => viewer.entities.remove(entity));
+
+  if (locationData && locationData.common_areas) {
+    // Crear marcadores para cada área común
+    Object.entries(locationData.common_areas).forEach(([key, location]) => {
+      viewer.entities.add({
+        id: `area_comun_${key}`,
+        position: Cesium.Cartesian3.fromDegrees(location.coordinates[0], location.coordinates[1]),
+        billboard: {
+          image: location.marker_image || "assets/placeholder.png",
+          width: 50,
+          height: 50,
+          verticalOrigin: Cesium.VerticalOrigin.BOTTOM
+        },
+        label: {
+          text: location.title,
+          font: 'bold 16px sans-serif',
+          fillColor: Cesium.Color.WHITE,
+          outlineColor: Cesium.Color.BLACK,
+          outlineWidth: 2,
+          style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+          verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+          pixelOffset: new Cesium.Cartesian2(0, 0)
+        }
+      });
+    });
+
+    // Calcular centro y hacer zoom a las áreas comunes
+    const coordinates = Object.values(locationData.common_areas).map(loc => loc.coordinates);
+    const centerLon = coordinates.reduce((sum, coord) => sum + coord[0], 0) / coordinates.length;
+    const centerLat = coordinates.reduce((sum, coord) => sum + coord[1], 0) / coordinates.length;
+
+    // Crear un boundingSphere que incluya todos los marcadores
+    const positions = coordinates.map(coord =>
+      Cesium.Cartesian3.fromDegrees(coord[0], coord[1])
+    );
+    const boundingSphere = Cesium.BoundingSphere.fromPoints(positions);
+
+    // Ajustar la vista para mostrar todos los marcadores
+    viewer.camera.flyToBoundingSphere(boundingSphere, {
+      duration: 1.5,
+      offset: new Cesium.HeadingPitchRange(
+        0.0,
+        Cesium.Math.toRadians(-45),
+        boundingSphere.radius * 2.5
+      )
+    });
+  }
+};
+
+const handleLotes = () => {
+  // Remover solo los marcadores del entorno
+  const entitiesToRemove = viewer.entities.values.filter(entity =>
+    entity.id === "marcador_1" || entity.id === "marcador_2"
+  );
+  entitiesToRemove.forEach(entity => viewer.entities.remove(entity));
+};
+const handleEntorno = async () => {
+  if (!locationData) {
+    await loadLocationData();
+  }
+
+  // Remover solo los marcadores del entorno si existen
+  const entitiesToRemove = viewer.entities.values.filter(entity =>
+    entity.id === "marcador_1" || entity.id === "marcador_2"
+  );
+  entitiesToRemove.forEach(entity => viewer.entities.remove(entity));
+
+  // Crear los marcadores usando createLine
+  const success = await createLine();
+
+  if (success && locationData) {
+    // Obtener las coordenadas de los marcadores
+    const positions = Object.values(locationData.locations).map(location => {
+      return Cesium.Cartesian3.fromDegrees(location.coordinates[0], location.coordinates[1]);
+    });
+    const boundingSphere = Cesium.BoundingSphere.fromPoints(positions);
+
+    // Usamos flyToBoundingSphere para centrar y ajustar el zoom
+    viewer.camera.flyToBoundingSphere(boundingSphere, {
+      duration: 2.0, // tiempo de animación (segundos)
+      offset: new Cesium.HeadingPitchRange(
+        0.0,     // heading (0 = mirando norte relativo)
+        -0.5,    // pitch (negativo = mirando hacia abajo)
+        3000  // range: aquí defines qué tan lejos estará la cámara
+      )
+    });
+  } else {
+    console.error("Error al crear la línea o cargar los datos de ubicación.");
+  }
+};// Configuración de los botones de navegación
+const setupNavButtons = () => {
+  const navButtons = document.querySelectorAll('.nav-button');
+  const entornoButton = document.querySelector('.entorno-button');
+
+  navButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      navButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      entornoButton.classList.remove('active');
+
+      if (button.textContent.trim() === 'Áreas Comunes') {
+        handleAreasComunes();
+      } else if (button.textContent.trim() === 'Lotes') {
+        handleLotes();
+      }
+    });
+  });
+
+  // Agregar evento click al botón de Entorno
+  if (entornoButton) {
+    entornoButton.addEventListener('click', () => {
+      navButtons.forEach(btn => btn.classList.remove('active'));
+      entornoButton.classList.add('active');
+      handleEntorno();
+    });
+  }
+};
+
+// Inicializar los botones cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', () => {
+  setupNavButtons();
+  loadLocationData(); // Cargar los datos de ubicaciones
+});
+
 // Your access token can be found at: https://ion.cesium.com/tokens.
 // This is the default access token from your ion account
 Cesium.Ion.defaultAccessToken = cesiumAccessToken;
@@ -74,7 +209,7 @@ async function calculateRoute(start, end) {
       offset: new Cesium.HeadingPitchRange(
         Cesium.Math.toRadians(0), // orientación horizontal
         Cesium.Math.toRadians(-30), // inclinación hacia abajo
-        boundingSphere.radius * 2.0 // distancia para que quepa toda la ruta
+        boundingSphere.radius * 2.5 // distancia para que quepa toda la ruta
       )
     });
     return true;
@@ -95,68 +230,42 @@ async function createLine() {
       window.currentRoute = null;
     }
 
-    // Crear marcador de la comisaría
-    const comisariaMarker = viewer.entities.add({
-      id: "marcador_1",
-      name: 'Comisaría de Mejía',
-      position: Cesium.Cartesian3.fromDegrees(comisariaLonLat[0], comisariaLonLat[1]),
-      billboard: {
-        image: 'assets/comisaria.webp',
-        width: 100,
-        height: 100,
-        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-        disableDepthTestDistance: Number.POSITIVE_INFINITY
-      },
-      label: {
-        text: 'Comisaría de Mejía',
-        font: 'bold 16px sans-serif',
-        fillColor: Cesium.Color.WHITE,
-        outlineColor: Cesium.Color.BLACK,
-        outlineWidth: 3,
-        style: Cesium.LabelStyle.FILL_AND_OUTLINE,
-        verticalOrigin: Cesium.VerticalOrigin.TOP,
-        pixelOffset: new Cesium.Cartesian2(0, 0),
-        disableDepthTestDistance: Number.POSITIVE_INFINITY
-      },
-      properties: {
-        type: 'comisaria',
-        title: 'Comisaría de Mejía',
-        description: 'Comisaría de Mejía',
-        position: comisariaLonLat
-      }
-    });
+    // if (!locationData) {
+    //   await loadLocationData();
+    // }
 
-    // Crear marcador de la plaza
-    const plazaMarker = viewer.entities.add({
-      id: "marcador_2",
-      name: 'Plaza de Mejía',
-      position: Cesium.Cartesian3.fromDegrees(plazaLonLat[0], plazaLonLat[1]),
-      billboard: {
-        image: 'assets/plaza_mejia.webp',
-        width: 100,
-        height: 100,
-        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-        disableDepthTestDistance: Number.POSITIVE_INFINITY
-      },
-      label: {
-        text: 'Plaza de Mejía',
-        font: 'bold 16px sans-serif',
-        fillColor: Cesium.Color.WHITE,
-        outlineColor: Cesium.Color.BLACK,
-        outlineWidth: 3,
-        style: Cesium.LabelStyle.FILL_AND_OUTLINE,
-        verticalOrigin: Cesium.VerticalOrigin.TOP,
-        pixelOffset: new Cesium.Cartesian2(0, 0),
-        disableDepthTestDistance: Number.POSITIVE_INFINITY
-      },
-      properties: {
-        type: 'plaza',
-        title: 'Plaza de Mejía',
-        description: 'Plaza de Mejía',
-        position: plazaLonLat
-      }
+    // Crear marcadores para cada ubicación en el JSON
+    Object.values(locationData.locations).forEach(location => {
+      viewer.entities.add({
+        id: location.id,
+        name: location.name,
+        position: Cesium.Cartesian3.fromDegrees(location.coordinates[0], location.coordinates[1]),
+        billboard: {
+          image: location.imageMarker,
+          width: 100,
+          height: 100,
+          verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+          disableDepthTestDistance: Number.POSITIVE_INFINITY
+        },
+        label: {
+          text: location.name,
+          font: 'bold 16px sans-serif',
+          fillColor: Cesium.Color.WHITE,
+          outlineColor: Cesium.Color.BLACK,
+          outlineWidth: 3,
+          style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+          verticalOrigin: Cesium.VerticalOrigin.TOP,
+          pixelOffset: new Cesium.Cartesian2(0, 0),
+          disableDepthTestDistance: Number.POSITIVE_INFINITY
+        },
+        properties: {
+          type: location.id,
+          title: location.title,
+          description: location.description,
+          position: location.coordinates
+        }
+      });
     });
-
 
     // Escuchar clics
     viewer.screenSpaceEventHandler.setInputAction(function onLeftClick(movement) {
@@ -166,22 +275,16 @@ async function createLine() {
       if (!Cesium.defined(pickedObject)) return;
 
       // Verificar si el clic fue sobre un Entity con billboard
-      if (
-        pickedObject.id &&
-        pickedObject.id.billboard && // Solo billboards (marcadores)
-        pickedObject.id.id.startsWith("marcador_1") // Filtro extra opcional
-      ) {
-        console.log("Se hizo clic en el marcador:", pickedObject.id.id);
-        // Aquí llamas a tu función para abrir modal
-        // abrirModal(pickedObject.id);
-        showLocationModal("Comisaria de Mejia", "Avenida Tambo S/N, Ensenada 04420", comisariaLonLat)
-      } else if (pickedObject.id &&
-        pickedObject.id.billboard && // Solo billboards (marcadores)
-        pickedObject.id.id.startsWith("marcador_2")) {
-        console.log("Se hizo clic en el marcador:", pickedObject.id.id);
-        // Aquí llamas a tu función para abrir modal
-        // abrirModal(pickedObject.id);
-        showLocationModal("Plaza de Mejia", "C. Nueva s/n, Arequipa 04420", plazaLonLat)
+      if (pickedObject.id && pickedObject.id.billboard) {
+        const locationId = pickedObject.id.id;
+        const locationProperties = pickedObject.id.properties;
+        if (locationId.startsWith("marcador_") || locationId.startsWith("area_comun_")) {
+          console.log("Se hizo clic en el marcador:", locationId);
+          const title = locationProperties.title._value;
+          const description = locationProperties.description._value;
+          const position = locationProperties.position._value;
+          showLocationModal(title, description, position);
+        }
       }
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
     return true;
@@ -192,38 +295,48 @@ async function createLine() {
 }
 
 console.log('Terreno cargado correctamente');
-const line = createLine();
-if (line) {
-  console.log('Línea creada exitosamente');
-} else {
-  console.error('No se pudieron crear los marcadores');
-}
 
 // Ocultar créditos de Cesium (solo el globo)
 viewer.cesiumWidget.creditContainer.style.display = "none";
 
+// Cargar datos de ubicaciones
+let locationData = null;
+
+async function loadLocationData() {
+  try {
+    const response = await fetch('./data/locations.json');
+    locationData = await response.json();
+  } catch (error) {
+    console.error('Error loading location data:', error);
+  }
+}
+
+// Cargar los datos cuando se inicia la aplicación
+loadLocationData();
+
 // Función para mostrar el modal de ubicación
-function showLocationModal(title, description, position) {
-  console.log('Mostrando modal para:', title);
+function showLocationModal(title, description, coordinates) {
   const modal = document.getElementById('locationModalOverlay');
   const titleEl = document.getElementById('locationModalTitle');
+  const addressEl = document.getElementById('locationModalAddress');
+  const timeEl = document.getElementById('locationModalTime');
   const routeBtn = document.getElementById('calculateRouteBtn');
 
-  if (modal && titleEl && routeBtn) {
-    console.log('Elementos del modal encontrados.');
+  if (modal && titleEl && addressEl && timeEl && routeBtn) {
     titleEl.textContent = title;
+    addressEl.textContent = description;
+    timeEl.textContent = "5-10 min";
 
     // Clonar y reemplazar el botón para limpiar listeners anteriores
     const newRouteBtn = routeBtn.cloneNode(true);
     routeBtn.parentNode.replaceChild(newRouteBtn, routeBtn);
 
+    // Agregar evento click al botón de ruta
     newRouteBtn.addEventListener('click', () => {
-      console.log('Botón "Cómo llegar" clickeado. Calculando ruta a:', position);
-      calculateRoute(startLonLat, position);
+      console.log('Calculando ruta hacia:', title);
+      calculateRoute(startLonLat, coordinates);
       closeLocationModal(); // Cierra el modal después de iniciar el cálculo
-    });
-
-    modal.style.display = 'flex';
+    }); modal.style.display = 'flex';
   } else {
     console.error('No se encontraron los elementos del modal. Verifica los IDs en index.html.');
   }
