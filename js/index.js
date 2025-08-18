@@ -384,21 +384,21 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
   .then((ds) => {
     // Add labels to each terrain polygon
     const entities = ds.entities.values;
-    
+    const polygonLabels = [];
     entities.forEach(entity => {
       // Only process if it's a polygon and has a number property
       if (entity.polygon && entity.properties && entity.properties.number) {
         // Get the polygon positions
         const positions = entity.polygon.hierarchy.getValue(Cesium.JulianDate.now()).positions;
-        
+
         // Calculate the center of the polygon
         const center = Cesium.BoundingSphere.fromPoints(positions).center;
-        
+
         // Get the number from properties
         const number = entity.properties.number.getValue();
-        
+
         // Add a label at the center of the polygon
-        viewer.entities.add({
+        const labelEntity = viewer.entities.add({
           position: center,
           label: {
             text: number ? number.toString() : '',
@@ -415,9 +415,28 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
             show: !!number // Only show label if number exists
           }
         });
+        polygonLabels.push(labelEntity);
       }
     });
-    
+    const referencePoint = Cesium.Cartesian3.fromDegrees(-71.89764735370906, -17.099287141165803);
+    // Rango fijo donde deben mostrarse (ej: hasta 1000 km de altura)
+    const MAX_DISTANCE = 300;
+
+    // Evento que se ejecuta antes de cada frame
+    viewer.scene.preRender.addEventListener(function () {
+      // Obtenemos la distancia de la cámara al punto de referencia
+      const distance = Cesium.Cartesian3.distance(
+        viewer.camera.positionWC,
+        referencePoint
+      );
+
+      polygonLabels.forEach(entity => {
+        const show = distance < MAX_DISTANCE;
+        if (entity.label) {
+          entity.label.show = show;
+        }
+      });
+    });
     // Add the data source to the viewer after processing
     viewer.dataSources.add(ds);
     // Estilizar: polígono con fid=1 en gris, el resto en naranja
