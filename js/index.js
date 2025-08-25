@@ -23,19 +23,19 @@ const handleAreasComunes = async () => {
         position: Cesium.Cartesian3.fromDegrees(location.coordinates[0], location.coordinates[1]),
         billboard: {
           image: location.marker_image || "assets/placeholder.png",
-          width: 50,
-          height: 50,
+          width: 80,
+          height: 80,
           verticalOrigin: Cesium.VerticalOrigin.BOTTOM
         },
         label: {
           text: location.title,
-          font: 'bold 10px sans-serif',
+          font: 'bold 12pt sans-serif',
           fillColor: Cesium.Color.WHITE,
           outlineColor: Cesium.Color.BLACK,
-          outlineWidth: 2,
+          outlineWidth: 3,
           style: Cesium.LabelStyle.FILL_AND_OUTLINE,
           verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-          pixelOffset: new Cesium.Cartesian2(0, 0),
+          pixelOffset: new Cesium.Cartesian2(0, 10),
           distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0.0, 3000.0)
         }
       });
@@ -143,7 +143,59 @@ const setupNavButtons = () => {
 document.addEventListener('DOMContentLoaded', () => {
   setupNavButtons();
   loadLocationData(); // Cargar los datos de ubicaciones
+
+  // Agregar manejadores de clic para los elementos del menú de áreas comunes
+  const menuItems = document.querySelectorAll('#commonAreasModalOverlay .menu-item');
+  menuItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const markerId = item.getAttribute('data-marker');
+      if (markerId) {
+        focusOnMarker(`area_comun_${markerId}`);
+        console.log("Click en el marcador: ", `area_comun_${markerId}`);
+      }
+    });
+  });
 });
+
+// Función para enfocar un marcador por su ID
+function focusOnMarker(markerId) {
+  const entity = viewer.entities.getById(markerId);
+  if (entity && entity.position) {
+    // Obtener la posición del marcador
+    const position = entity.position.getValue(Cesium.JulianDate.now());
+
+    // Crear un bounding sphere alrededor del marcador
+    const boundingSphere = new Cesium.BoundingSphere(position, 100);
+
+    // Mover la cámara al marcador con una animación suave
+    viewer.camera.flyToBoundingSphere(boundingSphere, {
+      duration: 1.0,
+      offset: new Cesium.HeadingPitchRange(
+        0.0, // heading (0 = norte)
+        Cesium.Math.toRadians(-45), // pitch (ángulo de visión hacia abajo)
+        150  // distancia desde el marcador
+      )
+    });
+
+    // Resaltar el marcador seleccionado
+    if (entity.billboard) {
+      // Guardar el estilo original si no existe
+      if (!entity.originalBillboardScale) {
+        entity.originalBillboardScale = entity.billboard.scale.getValue();
+      }
+
+      // Animación de resaltado
+      entity.billboard.scale = new Cesium.ConstantProperty(entity.originalBillboardScale * 1.5);
+
+      // Restaurar el tamaño original después de un tiempo
+      setTimeout(() => {
+        if (entity.billboard && entity.originalBillboardScale !== undefined) {
+          entity.billboard.scale = new Cesium.ConstantProperty(entity.originalBillboardScale);
+        }
+      }, 1000);
+    }
+  }
+}
 
 // Your access token can be found at: https://ion.cesium.com/tokens.
 // This is the default access token from your ion account
@@ -412,7 +464,11 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
             disableDepthTestDistance: Number.POSITIVE_INFINITY,
             scale: 1.0,
             heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
-            show: !!number // Only show label if number exists
+            show: !!number, // Only show label if number exists
+            // scaleByDistance: new Cesium.NearFarScalar(
+            //   100.0, 2.0,    // 👈 A 100 metros o menos → escala 2x
+            //   101.0, 1.0     // 👈 A partir de 101 metros → escala normal (1x)
+            // )
           }
         });
         polygonLabels.push(labelEntity);
@@ -421,6 +477,21 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
     const referencePoint = Cesium.Cartesian3.fromDegrees(-71.89764735370906, -17.099287141165803);
     // Rango fijo donde deben mostrarse (ej: hasta 1000 km de altura)
     const MAX_DISTANCE = 550;
+    viewer.entities.add({
+      name: "Mykonos",
+      position: Cesium.Cartesian3.fromDegrees(-71.89764735370906, -17.099287141165803),
+      billboard: {
+        image: "assets/mykonos_marker.webp",
+        width: 150,
+        height: 150,
+        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+        disableDepthTestDistance: Number.POSITIVE_INFINITY,
+        distanceDisplayCondition: new Cesium.DistanceDisplayCondition(550, 1000000)
+      },
+    });
+    // Umbral de distancia
+    const NEAR_DISTANCE = 200.0;  // < 100 m → agrandar
+    const FAR_DISTANCE = 201.0;
 
     // Evento que se ejecuta antes de cada frame
     viewer.scene.preRender.addEventListener(function () {
@@ -434,7 +505,14 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
         const show = distance < MAX_DISTANCE;
         if (entity.label) {
           entity.label.show = show;
+          if (distance <= NEAR_DISTANCE) {
+            entity.label.scale = 1.5;
+          } else if (distance >= FAR_DISTANCE) {
+            entity.label.scale = 1.0;
+          }
         }
+
+
       });
     });
     // Add the data source to the viewer after processing
@@ -883,12 +961,12 @@ function calculatePolygonCenter(coordinates) {
   let sumLon = 0;
   let sumLat = 0;
   const numPoints = coordinates.length;
-  
+
   coordinates.forEach(coord => {
     sumLon += coord[0]; // longitud
     sumLat += coord[1]; // latitud
   });
-  
+
   return {
     longitude: sumLon / numPoints,
     latitude: sumLat / numPoints
@@ -955,10 +1033,10 @@ const polygonCenter = calculatePolygonCenter(polygonCoordinates);
         // Convertir coordenadas del centro a radianes
         const centerLon = Cesium.Math.toRadians(polygonCenter.longitude);
         const centerLat = Cesium.Math.toRadians(polygonCenter.latitude);
-        
+
         // Altura para vista superior (ajusta según necesites)
         const viewHeight = 500.0; // metros sobre el terreno
-        
+
         // Volar a la vista superior del polígono
         viewer.camera.flyTo({
           destination: Cesium.Cartesian3.fromRadians(centerLon, centerLat, viewHeight),
@@ -969,17 +1047,17 @@ const polygonCenter = calculatePolygonCenter(polygonCoordinates);
           },
           duration: 2.0, // Duración de la animación en segundos
         });
-        
+
         console.log(`Volando a vista superior del polígono: ${polygonCenter.longitude}, ${polygonCenter.latitude}`);
-        
+
       } catch (error) {
         console.error('Error al volar a la vista superior:', error);
-        
+
         // Fallback alternativo
         viewer.camera.setView({
           destination: Cesium.Cartesian3.fromDegrees(
-            polygonCenter.longitude, 
-            polygonCenter.latitude, 
+            polygonCenter.longitude,
+            polygonCenter.latitude,
             1000.0
           ),
           orientation: {
