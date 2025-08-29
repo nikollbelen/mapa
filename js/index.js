@@ -378,7 +378,7 @@ const disponible = Cesium.Color.fromCssColorString('#4CAF50');
 Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
   clampToGround: true,
   stroke: Cesium.Color.fromCssColorString('#000000'),
-  fill: disponible,
+  fill: disponible.withAlpha(0.3),
   strokeWidth: 4,
 })
   .then((ds) => {
