@@ -2,109 +2,519 @@ import { cesiumAccessToken, targetLocation, url } from "./cesiumConfig.js";
 import { trees } from "./coordinates.js";
 import { createModel } from "./CesiumFun.js";
 
+function reiniciarMenu() {
+  document.getElementById('fotos').classList.remove('active');
+  document.getElementById('areas').classList.remove('active');
+  document.getElementById('lotes').classList.remove('active');
+  document.getElementById('entorno').classList.remove('active');
+
+  // Cerrar todos los modales
+  document.getElementById('commonAreasModalOverlay').style.display = 'none';
+  document.getElementById('locationModalOverlay').style.display = 'none';
+  
+  // Cerrar modal de búsqueda de lotes si está abierto
+  const lotSearchModal = document.getElementById('lotSearchModalOverlay');
+  if (lotSearchModal) {
+    lotSearchModal.style.display = 'none';
+  }
+  
+  // Cerrar modal de lote si está abierto
+  const modalOverlay = document.getElementById('modalOverlay');
+  if (modalOverlay) {
+    modalOverlay.style.display = 'none';
+  }
+  
+  // Limpiar estado del lote seleccionado usando la función global
+  if (window.cesiumClearSelection) {
+    window.cesiumClearSelection();
+  }
+  
+  // Cerrar modal usando la función global
+  if (window.cesiumOnModalClosed) {
+    window.cesiumOnModalClosed();
+  }
+  
+  // Ocultar botones del entorno
+  if (window.hideEntornoButtons) {
+    window.hideEntornoButtons();
+  }
+  
+  // Limpiar TODOS los marcadores cuando se cambia de modo
+  const allEntitiesToRemove = viewer.entities.values.filter(entity =>
+    entity.id && (
+      entity.id.startsWith("area_comun_") ||
+      entity.id.startsWith("foto_") ||
+      entity.id.startsWith("entorno_") ||
+      entity.id === "marcador_1" ||
+      entity.id === "marcador_2"
+    )
+  );
+  allEntitiesToRemove.forEach(entity => viewer.entities.remove(entity));
+  
+  // Limpiar ruta anterior si existe
+  if (window.currentRoute) {
+    viewer.entities.remove(window.currentRoute);
+    window.currentRoute = null;
+  }
+  
+  // Limpiar hover de fotos 360°
+  if (highlightedFoto && highlightedFotoOriginalScale !== null) {
+    highlightedFoto.billboard.scale = highlightedFotoOriginalScale;
+  }
+  highlightedFoto = null;
+  highlightedFotoOriginalScale = null;
+  
+  // Limpiar hover del entorno
+  if (highlightedEntorno && highlightedEntornoOriginalScale !== null) {
+    highlightedEntorno.billboard.scale = highlightedEntornoOriginalScale;
+  }
+  highlightedEntorno = null;
+  highlightedEntornoOriginalScale = null;
+  
+  viewer.scene.canvas.style.cursor = "default";
+}
+
 // No necesitamos variables globales para los marcadores ya que se manejan a través de viewer.entities// Funciones específicas para cada tipo de visualización
 const handleAreasComunes = async () => {
-  if (!locationData) {
-    await loadLocationData();
+  reiniciarMenu();
+  document.getElementById('areas').classList.add('active');
+
+  // Cerrar todos los otros modales
+  if (window.closeAllModalsExcept) {
+    window.closeAllModalsExcept('commonAreasModalOverlay');
   }
 
-  document.getElementById('commonAreasModalOverlay').style.display = 'flex';
   // Remover marcadores existentes de áreas comunes
   const entitiesToRemove = viewer.entities.values.filter(entity =>
-    entity.id && entity.id.startsWith("area_comun_") || entity.id === "marcador_1" || entity.id === "marcador_2"
+    entity.id && (entity.id.startsWith("area_comun_") || entity.id.startsWith("foto_") || entity.id === "marcador_1" || entity.id === "marcador_2")
   );
   entitiesToRemove.forEach(entity => viewer.entities.remove(entity));
 
-  if (locationData && locationData.common_areas) {
-    // Crear marcadores para cada área común
-    Object.entries(locationData.common_areas).forEach(([key, location]) => {
-      viewer.entities.add({
-        id: `area_comun_${key}`,
-        position: Cesium.Cartesian3.fromDegrees(location.coordinates[0], location.coordinates[1]),
-        billboard: {
-          image: location.marker_image || "assets/placeholder.png",
-          width: 80,
-          height: 80,
-          verticalOrigin: Cesium.VerticalOrigin.BOTTOM
-        },
-        label: {
-          text: location.title,
-          font: 'bold 12pt sans-serif',
-          fillColor: Cesium.Color.WHITE,
-          outlineColor: Cesium.Color.BLACK,
-          outlineWidth: 3,
-          style: Cesium.LabelStyle.FILL_AND_OUTLINE,
-          verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-          pixelOffset: new Cesium.Cartesian2(0, 10),
-          distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0.0, 3000.0)
-        }
+  let areasComunesData = null;
+  
+  try {
+    // Cargar datos del archivo areas_comunes.geojson
+    const response = await fetch('./data/areas_comunes.geojson');
+    areasComunesData = await response.json();
+    
+    if (areasComunesData && areasComunesData.features) {
+      const positions = [];
+      
+      // Crear marcadores para cada feature en el GeoJSON
+      areasComunesData.features.forEach(feature => {
+        const fid = feature.properties.fid;
+        const name = feature.properties.name;
+        const image = feature.properties.image;
+        const coordinates = feature.geometry.coordinates;
+        
+        console.log(`Creando marcador área común ${fid}: ${name} en coordenadas:`, coordinates);
+        
+        // Crear marcador con imagen areas_comunes.svg
+        const entity = viewer.entities.add({
+          id: `area_comun_${fid}`,
+          position: Cesium.Cartesian3.fromDegrees(coordinates[0], coordinates[1]),
+          billboard: {
+            image: "img/areas_comunes.svg",
+            width: 45,
+            height: 58,
+            verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+            horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+            disableDepthTestDistance: Number.POSITIVE_INFINITY,
+            color: Cesium.Color.WHITE,
+            scale: 1.0,
+            show: true,
+            scaleByDistance: new Cesium.NearFarScalar(100.0, 1.0, 2000.0, 0.5),
+            alignedAxis: Cesium.Cartesian3.ZERO,
+            pixelOffset: Cesium.Cartesian2.ZERO,
+            eyeOffset: Cesium.Cartesian3.ZERO,
+            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+          },
+          label: {
+            text: name,
+            font: 'bold 12pt sans-serif',
+            fillColor: Cesium.Color.WHITE,
+            outlineColor: Cesium.Color.BLACK,
+            outlineWidth: 2,
+            style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+            verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+            pixelOffset: new Cesium.Cartesian2(0, 10),
+            disableDepthTestDistance: Number.POSITIVE_INFINITY,
+            distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0.0, 2000.0)
+          },
+          properties: {
+            type: 'area_comun',
+            fid: fid,
+            name: name,
+            image: image,
+            coordinates: coordinates
+          }
+        });
+        
+        console.log(`Marcador área común creado:`, entity);
+        positions.push(Cesium.Cartesian3.fromDegrees(coordinates[0], coordinates[1]));
       });
-    });
 
-    // Calcular centro y hacer zoom a las áreas comunes
-    const coordinates = Object.values(locationData.common_areas).map(loc => loc.coordinates);
-    const centerLon = coordinates.reduce((sum, coord) => sum + coord[0], 0) / coordinates.length;
-    const centerLat = coordinates.reduce((sum, coord) => sum + coord[1], 0) / coordinates.length;
+      // Calcular centro y hacer zoom a las áreas comunes
+      if (positions.length > 0) {
+        const boundingSphere = Cesium.BoundingSphere.fromPoints(positions);
+        viewer.camera.flyToBoundingSphere(boundingSphere, {
+          duration: 2.0,
+          offset: new Cesium.HeadingPitchRange(0, Cesium.Math.toRadians(-45), boundingSphere.radius * 2)
+        });
+      }
+    }
+  } catch (error) {
+    console.error('Error al cargar las áreas comunes:', error);
+  }
 
-    // Crear un boundingSphere que incluya todos los marcadores
-    const positions = coordinates.map(coord =>
-      Cesium.Cartesian3.fromDegrees(coord[0], coord[1])
-    );
-    const boundingSphere = Cesium.BoundingSphere.fromPoints(positions);
+  // Llenar el modal con los datos del GeoJSON
+  if (areasComunesData) {
+    populateCommonAreasModal(areasComunesData);
+  }
 
-    // Ajustar la vista para mostrar todos los marcadores
-    viewer.camera.flyToBoundingSphere(boundingSphere, {
-      duration: 1.5,
-      offset: new Cesium.HeadingPitchRange(
-        0.0,
-        Cesium.Math.toRadians(-45),
-        boundingSphere.radius * 2.5
-      )
-    });
+  // Abrir el modal de áreas comunes
+  document.getElementById('commonAreasModalOverlay').style.display = 'flex';
+};
+
+// Función para llenar el modal de áreas comunes con datos del GeoJSON
+function populateCommonAreasModal(areasComunesData) {
+  const grid = document.getElementById('commonAreasGrid');
+  
+  if (!grid || !areasComunesData || !areasComunesData.features) {
+    console.error('No se pudo llenar el modal de áreas comunes');
+    return;
+  }
+
+  // Limpiar el grid
+  grid.innerHTML = '';
+
+  // Crear tarjetas para cada área común
+  areasComunesData.features.forEach(feature => {
+    const fid = feature.properties.fid;
+    const name = feature.properties.name;
+    const image = feature.properties.image;
+    
+    console.log(`Creando tarjeta para área común ${fid}: ${name} con imagen: ${image}`);
+    
+    // Crear la tarjeta
+    const card = document.createElement('div');
+    card.className = 'common-areas-card';
+    card.setAttribute('data-marker', `area_comun_${fid}`);
+    
+    // Crear el contenido de la tarjeta
+    card.innerHTML = `
+      <div class="common-areas-card-image" style="background-image: url('${image}');">
+      </div>
+      <div class="common-areas-card-title">${name}</div>
+      <div class="common-areas-card-buttons">
+        <button class="common-areas-card-button" style="background-color: #948f8f80;" onclick="openAreasComunesImagesModal('${image}')">
+          <span>Ver imágenes</span>
+        </button>
+        <button class="common-areas-card-button" onclick="flyToAreaComun(${fid})">
+          <span>Ver en el mapa</span>
+        </button>
+      </div>
+    `;
+    
+    // Agregar la tarjeta al grid
+    grid.appendChild(card);
+  });
+}
+
+// Función temporal para detectar movimiento de cámara y mostrar coordenadas/zoom
+window.enableCameraDebug = function() {
+  console.log("🔍 Modo debug de cámara activado - Mueve la cámara para ver coordenadas y zoom");
+  
+  // Evento que se dispara cuando la cámara se mueve
+  viewer.camera.moveEnd.addEventListener(function() {
+    const camera = viewer.camera;
+    const position = camera.position;
+    const cartographic = Cesium.Cartographic.fromCartesian(position);
+    
+    // Convertir a grados
+    const longitude = Cesium.Math.toDegrees(cartographic.longitude);
+    const latitude = Cesium.Math.toDegrees(cartographic.latitude);
+    const height = cartographic.height;
+    
+    // Obtener el zoom (altura de la cámara)
+    const zoom = height;
+    
+    console.log("📍 Posición de la cámara:");
+    console.log(`   Longitud: ${longitude.toFixed(6)}°`);
+    console.log(`   Latitud: ${latitude.toFixed(6)}°`);
+    console.log(`   Altura/Zoom: ${zoom.toFixed(2)} metros`);
+    console.log("---");
+  });
+};
+
+// Función para desactivar el debug de cámara
+window.disableCameraDebug = function() {
+  console.log("🔍 Modo debug de cámara desactivado");
+  viewer.camera.moveEnd.removeEventListener();
+};
+
+// Función para volar a un área común específica - disponible globalmente
+window.flyToAreaComun = function(fid) {
+  const entity = viewer.entities.getById(`area_comun_${fid}`);
+  if (entity) {
+    console.log(`Volando a área común ${fid}:`, entity);
+    
+    // Obtener la posición de la entidad
+    const position = entity.position.getValue(viewer.clock.currentTime);
+    
+    if (position) {
+      // Crear un bounding sphere pequeño centrado en la posición
+      const boundingSphere = new Cesium.BoundingSphere(position, 54);
+      
+      viewer.camera.flyToBoundingSphere(boundingSphere, {
+        duration: 1.5,
+        offset: new Cesium.HeadingPitchRange(0, Cesium.Math.toRadians(-45), 0)
+      });
+      console.log(`Zoom automático a área común ${fid} completado`);
+    } else {
+      console.error(`No se pudo obtener la posición del área común ${fid}`);
+    }
+  } else {
+    console.error(`No se encontró el área común con fid ${fid}`);
   }
 };
 
 const handleLotes = () => {
+  reiniciarMenu();
+  document.getElementById('lotes').classList.add('active');
+  
+  // Cerrar todos los otros modales
+  if (window.closeAllModalsExcept) {
+    window.closeAllModalsExcept('lotSearchModalOverlay');
+  }
+  try {
+    // Convertir coordenadas del centro a radianes
+    const centerLon = Cesium.Math.toRadians(polygonCenter.longitude);
+    const centerLat = Cesium.Math.toRadians(polygonCenter.latitude);
+
+    // Altura para vista superior (ajusta según necesites)
+    const viewHeight = 500.0; // metros sobre el terreno
+
+    // Volar a la vista superior del polígono
+    viewer.camera.flyTo({
+      destination: Cesium.Cartesian3.fromRadians(centerLon, centerLat, viewHeight),
+      orientation: {
+        heading: Cesium.Math.toRadians(0.0),    // Norte arriba
+        pitch: Cesium.Math.toRadians(-93.0),    // Vista completamente vertical (nadir)
+        roll: 0.0,                              // Sin rotación
+      },
+      duration: 2.0, // Duración de la animación en segundos
+    });
+
+    console.log(`Volando a vista superior del polígono: ${polygonCenter.longitude}, ${polygonCenter.latitude}`);
+
+  } catch (error) {
+    console.error('Error al volar a la vista superior:', error);
+  }
+  // Abrir el modal de búsqueda de lotes
+  if (window.openLotSearchModal) {
+    window.openLotSearchModal();
+  }
+  
   // Remover solo los marcadores del entorno
   const entitiesToRemove = viewer.entities.values.filter(entity =>
-    entity.id === "marcador_1" || entity.id === "marcador_2"
+    entity.id === "marcador_1" || entity.id === "marcador_2" || (entity.id && entity.id.startsWith("foto_"))
   );
   entitiesToRemove.forEach(entity => viewer.entities.remove(entity));
 };
+
 const handleEntorno = async () => {
-  if (!locationData) {
-    await loadLocationData();
+  reiniciarMenu();
+  document.getElementById('entorno').classList.add('active'); 
+  
+  // Mostrar botones del entorno
+  if (window.showEntornoButtons) {
+    window.showEntornoButtons();
+  }
+  
+  // Configurar event listeners de los botones del entorno
+  setupEntornoButtonsListeners();
+  
+  // Cerrar todos los otros modales
+  if (window.closeAllModalsExcept) {
+    window.closeAllModalsExcept('none'); // No hay modal específico para entorno
   }
 
-  // Remover solo los marcadores del entorno si existen
+  // Remover marcadores existentes
   const entitiesToRemove = viewer.entities.values.filter(entity =>
-    entity.id === "marcador_1" || entity.id === "marcador_2" || entity.id.startsWith("area_comun_")
+    entity.id && (entity.id.startsWith("entorno_") || entity.id.startsWith("area_comun_") || entity.id.startsWith("foto_"))
   );
   entitiesToRemove.forEach(entity => viewer.entities.remove(entity));
 
-  // Crear los marcadores usando createLine
-  const success = await createLine();
+  // Cargar todos los marcadores desde entorno.geojson
+  await loadEntornoMarkers();
+  
+  // Activar botón "Todos" inicialmente
+  updateEntornoButtonsState("Todos");
+};
 
-  if (success && locationData) {
-    // Obtener las coordenadas de los marcadores
-    const positions = Object.values(locationData.locations).map(location => {
-      return Cesium.Cartesian3.fromDegrees(location.coordinates[0], location.coordinates[1]);
-    });
-    const boundingSphere = Cesium.BoundingSphere.fromPoints(positions);
-
-    // Usamos flyToBoundingSphere para centrar y ajustar el zoom
-    viewer.camera.flyToBoundingSphere(boundingSphere, {
-      duration: 2.0, // tiempo de animación (segundos)
-      offset: new Cesium.HeadingPitchRange(
-        0.0,     // heading (0 = mirando norte relativo)
-        -0.5,    // pitch (negativo = mirando hacia abajo)
-        3000  // range: aquí defines qué tan lejos estará la cámara
-      )
-    });
-  } else {
-    console.error("Error al crear la línea o cargar los datos de ubicación.");
+// Función para manejar las fotos 360°
+const handleFotos = async () => {
+  reiniciarMenu();
+  document.getElementById('fotos').classList.add('active');
+  
+  // Cerrar todos los otros modales
+  if (window.closeAllModalsExcept) {
+    window.closeAllModalsExcept('none');
   }
-};// Configuración de los botones de navegación
+
+  // Remover marcadores existentes de fotos
+  const entitiesToRemove = viewer.entities.values.filter(entity =>
+    entity.id && entity.id.startsWith("foto_")
+  );
+  entitiesToRemove.forEach(entity => viewer.entities.remove(entity));
+
+  try {
+    // Cargar datos del archivo areas.geojson
+    const response = await fetch('./data/areas.geojson');
+    const areasData = await response.json();
+    
+    if (areasData && areasData.features) {
+      const positions = [];
+      
+      // Crear marcadores para cada feature en el GeoJSON
+      areasData.features.forEach(feature => {
+        const fid = feature.properties.fid;
+        const coordinates = feature.geometry.coordinates;
+        
+        console.log(`Creando marcador foto_${fid} en coordenadas:`, coordinates);
+        console.log(`Intentando cargar imagen: img/360.svg`);
+        
+        // Crear marcador con imagen 360.svg
+        const entity = viewer.entities.add({
+          id: `foto_${fid}`,
+          position: Cesium.Cartesian3.fromDegrees(coordinates[0], coordinates[1]),
+          billboard: {
+            image: "img/360.svg",
+            width: 45,
+            height: 58,
+            verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+            horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+            disableDepthTestDistance: Number.POSITIVE_INFINITY,
+            color: Cesium.Color.WHITE,
+            scale: 1.0,
+            show: true,
+            scaleByDistance: new Cesium.NearFarScalar(100.0, 1.0, 2000.0, 0.5),
+            alignedAxis: Cesium.Cartesian3.ZERO,
+            pixelOffset: Cesium.Cartesian2.ZERO,
+            eyeOffset: Cesium.Cartesian3.ZERO,
+            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+          },
+          properties: {
+            type: 'foto',
+            fid: fid,
+            name: feature.properties.name || `Foto ${fid}`,
+            coordinates: coordinates,
+            kuulaUrl: feature.properties.kuula_url || "https://kuula.co/share/hhSPW?logo=1&info=1&fs=1&vr=0&sd=1&thumbs=1"
+          }
+        });
+        
+        console.log(`Marcador creado:`, entity);
+        positions.push(Cesium.Cartesian3.fromDegrees(coordinates[0], coordinates[1]));
+      });
+
+      // Configurar eventos de hover y click para marcadores de fotos
+      setupFotos360Interactions();
+
+      // Calcular centro y hacer zoom a las fotos
+      if (positions.length > 0) {
+        const boundingSphere = Cesium.BoundingSphere.fromPoints(positions);
+        
+        // Ajustar la vista para mostrar todos los marcadores
+        viewer.camera.flyToBoundingSphere(boundingSphere, {
+          duration: 1.5,
+          offset: new Cesium.HeadingPitchRange(
+            0.0,
+            Cesium.Math.toRadians(-45),
+            boundingSphere.radius * 3.0
+          )
+        });
+      }
+    }
+  } catch (error) {
+    console.error('Error al cargar las fotos 360°:', error);
+  }
+};
+
+// Variables para manejar el hover de marcadores de fotos 360°
+let highlightedFoto = null;
+let highlightedFotoOriginalScale = null;
+
+// Variables para manejar el hover de marcadores del entorno
+let highlightedEntorno = null;
+let highlightedEntornoOriginalScale = null;
+
+// Función para configurar interacciones de hover y click para marcadores de fotos 360°
+function setupFotos360Interactions() {
+  // Evento de hover para cambiar cursor y escala
+  viewer.screenSpaceEventHandler.setInputAction(function onMouseMove(movement) {
+    // 1) Intento rápido con drillPick
+    const picked = viewer.scene.drillPick(movement.endPosition) || [];
+    let entity = picked.map((p) => p.id).find((id) => id && id.id && id.id.startsWith("foto_")) || null;
+
+    // Restaurar hover si nos movimos fuera o a otra entidad
+    if (highlightedFoto && highlightedFoto !== entity) {
+      // Restaurar escala original
+      if (highlightedFotoOriginalScale !== null) {
+        highlightedFoto.billboard.scale = highlightedFotoOriginalScale;
+      }
+      highlightedFoto = null;
+      highlightedFotoOriginalScale = null;
+      viewer.scene.requestRender();
+    }
+
+    if (entity && entity.id && entity.id.startsWith("foto_")) {
+      // Aplicar hover si no es el mismo marcador
+      if (highlightedFoto !== entity) {
+        highlightedFoto = entity;
+        // Guardar la escala original
+        highlightedFotoOriginalScale = entity.billboard.scale._value || 1.0;
+        // Hacer el marcador un poco más grande
+        entity.billboard.scale = highlightedFotoOriginalScale * 1.2;
+        viewer.scene.requestRender();
+      }
+      
+      // Establecer cursor pointer
+      viewer.scene.canvas.style.cursor = "pointer";
+      console.log("Cursor cambiado a pointer para foto");
+    } else {
+      // Si no hay marcador de foto bajo el mouse, volver cursor a default
+      viewer.scene.canvas.style.cursor = "default";
+      console.log("Cursor cambiado a default - no hay foto");
+    }
+  }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
+  // Evento de click para abrir el modal
+  viewer.screenSpaceEventHandler.setInputAction(function onLeftClick(click) {
+    const pickedObject = viewer.scene.pick(click.position);
+    
+    console.log("Click detectado, objeto seleccionado:", pickedObject);
+    
+    if (pickedObject && pickedObject.id) {
+      const entity = pickedObject.id;
+      const entityId = entity.id;
+      
+      console.log("ID de la entidad:", entityId);
+      
+      if (entityId && entityId.startsWith("foto_")) {
+        console.log("Es un marcador de foto, abriendo modal...");
+        
+        // Obtener la URL específica de Kuula del marcador
+        const kuulaUrl = entity.properties.kuulaUrl._value;
+        console.log("URL de Kuula del marcador:", kuulaUrl);
+        
+        // Abrir el modal con la URL específica de Kuula
+        openFotos360Modal(kuulaUrl);
+      }
+    }
+  }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+}// Configuración de los botones de navegación
+
 const setupNavButtons = () => {
   const navButtons = document.querySelectorAll('.nav-button');
   const entornoButton = document.querySelector('.entorno-button');
@@ -142,6 +552,10 @@ const setupNavButtons = () => {
 // Inicializar los botones cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
   setupNavButtons();
+  document.getElementById('fotos').addEventListener('click', handleFotos);
+  document.getElementById('areas').addEventListener('click', handleAreasComunes);
+  document.getElementById('lotes').addEventListener('click', handleLotes);
+  document.getElementById('entorno').addEventListener('click', handleEntorno);
   loadLocationData(); // Cargar los datos de ubicaciones
 
   // Agregar manejadores de clic para los elementos del menú de áreas comunes
@@ -225,7 +639,7 @@ console.log('Cesium está cargado:', typeof Cesium !== 'undefined');
 const API_KEY = "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImJlOTVmNWNlOGI4MzQ4MWM5ODY2MmQ5MTIxMGYxY2NmIiwiaCI6Im11cm11cjY0In0=";
 
 // Función para calcular y mostrar la ruta
-async function calculateRoute(start, end) {
+async function calculateRoute(start, end, tipo = null) {
   try {
     const response = await fetch(
       `https://api.openrouteservice.org/v2/directions/driving-car?` +
@@ -245,10 +659,30 @@ async function calculateRoute(start, end) {
       positions.push(coord[0], coord[1]);
     });
 
+    // Extraer información de tiempo y distancia
+    const duration = data.features[0].properties.summary.duration; // en segundos
+    const distance = data.features[0].properties.summary.distance; // en metros
+    const durationMinutes = Math.round(duration / 60); // convertir a minutos
+
+    console.log(`⏱️ Tiempo estimado: ${durationMinutes} minutos`);
+    console.log(`📏 Distancia: ${Math.round(distance)} metros`);
+
     // Eliminar ruta anterior si existe
     if (window.currentRoute) {
       viewer.entities.remove(window.currentRoute);
     }
+    
+    // Seleccionar color según el tipo
+    const colorMap = {
+      'Playas': new Cesium.Color(251/255, 224/255, 73/255, 1.0),      // Amarillo
+      'Restaurantes': new Cesium.Color(29/255, 183/255, 121/255, 1.0), // Verde
+      'Hoteles': new Cesium.Color(251/255, 195/255, 145/255, 1.0),     // Naranja claro
+      'Turismo': new Cesium.Color(251/255, 73/255, 73/255, 1.0),       // Rojo
+      'Seguridad': new Cesium.Color(73/255, 156/255, 251/255, 1.0)     // Azul
+    };
+    
+    const routeColor = tipo && colorMap[tipo] ? colorMap[tipo] : new Cesium.Color(0.1, 0.1, 0.1, 1.0);
+    
     const boundingSphere = Cesium.BoundingSphere.fromPoints(Cesium.Cartesian3.fromDegreesArray(positions));
     // Crear la nueva ruta
     window.currentRoute = viewer.entities.add({
@@ -256,7 +690,7 @@ async function calculateRoute(start, end) {
       polyline: {
         positions: Cesium.Cartesian3.fromDegreesArray(positions),
         width: 15, // Aumentado el grosor de la línea
-        material: new Cesium.Color(0.1, 0.1, 0.1, 1.0), // Gris muy oscuro
+        material: routeColor,
         clampToGround: true,
         shadows: Cesium.ShadowMode.DISABLED
       }
@@ -272,11 +706,231 @@ async function calculateRoute(start, end) {
         boundingSphere.radius * 2.5 // distancia para que quepa toda la ruta
       )
     });
-    return true;
+    
+    // Retornar información de la ruta
+    return {
+      success: true,
+      duration: durationMinutes,
+      distance: Math.round(distance)
+    };
   } catch (error) {
     console.error('Error al calcular la ruta:', error);
     return false;
   }
+}
+
+// Función simplificada para crear ruta desde un punto hacia el Pórtico de ingreso
+async function createRouteToDestination(startCoordinates) {
+  try {
+    console.log('🚗 Calculando ruta desde:', startCoordinates, 'hacia el Pórtico de ingreso');
+    
+    // Usar el Pórtico de ingreso como punto de destino fijo
+    const endPoint = startLonLat; // [-71.8968, -17.1000] - Pórtico de ingreso
+    
+    // Calcular la ruta usando la función existente
+    const result = await calculateRoute(startCoordinates, endPoint);
+    
+    if (result && result.success) {
+      console.log('✅ Ruta calculada y mostrada exitosamente');
+      console.log(`⏱️ Tiempo: ${result.duration} minutos`);
+      console.log(`📏 Distancia: ${result.distance} metros`);
+      return result;
+    } else {
+      console.error('❌ Error al calcular la ruta');
+      return false;
+    }
+  } catch (error) {
+    console.error('❌ Error en createRouteToDestination:', error);
+    return false;
+  }
+}
+
+// Hacer la función global para uso externo
+window.createRouteToDestination = createRouteToDestination;
+
+// Función para filtrar marcadores del entorno por tipo
+async function filterEntornoByType(tipo) {
+  // Cerrar modal de ubicación si está abierto
+  const locationModal = document.getElementById('locationModalOverlay');
+  if (locationModal) {
+    locationModal.style.display = 'none';
+  }
+  
+  // Limpiar ruta anterior si existe
+  if (window.currentRoute) {
+    viewer.entities.remove(window.currentRoute);
+    window.currentRoute = null;
+  }
+  
+  // Limpiar hover del entorno
+  if (highlightedEntorno && highlightedEntornoOriginalScale !== null) {
+    highlightedEntorno.billboard.scale = highlightedEntornoOriginalScale;
+  }
+  highlightedEntorno = null;
+  highlightedEntornoOriginalScale = null;
+  
+  // Remover marcadores del entorno existentes
+  const entitiesToRemove = viewer.entities.values.filter(entity =>
+    entity.id && entity.id.startsWith("entorno_")
+  );
+  entitiesToRemove.forEach(entity => viewer.entities.remove(entity));
+  
+  // Si es "Todos", cargar sin filtro, sino filtrar por tipo
+  const filterType = tipo === "Todos" ? null : tipo;
+  await loadEntornoMarkers(filterType);
+  
+  // Actualizar estado visual de los botones
+  updateEntornoButtonsState(tipo);
+}
+
+// Función para actualizar el estado visual de los botones del entorno
+function updateEntornoButtonsState(activeType) {
+  const buttons = document.querySelectorAll('#entornoButtonsContainer .entorno-button');
+  
+  buttons.forEach(button => {
+    const buttonText = button.querySelector('.entorno-button-text').textContent;
+    
+    if (buttonText === activeType) {
+      button.classList.add('active');
+    } else {
+      button.classList.remove('active');
+    }
+  });
+}
+
+// Función para cargar marcadores del entorno desde entorno.geojson
+async function loadEntornoMarkers(filterType = null) {
+  try {
+    const response = await fetch('./data/entorno.geojson');
+    const entornoData = await response.json();
+    
+    if (entornoData && entornoData.features) {
+      const positions = [];
+      
+      // Filtrar features por tipo si se especifica
+      const filteredFeatures = filterType 
+        ? entornoData.features.filter(feature => feature.properties.tipo === filterType)
+        : entornoData.features;
+      
+      filteredFeatures.forEach(feature => {
+        const fid = feature.properties.fid;
+        const tipo = feature.properties.tipo;
+        const nombre = feature.properties.nombre;
+        const icono = feature.properties.icono;
+        const coordinates = feature.geometry.coordinates;
+
+        const entity = viewer.entities.add({
+          id: `entorno_${fid}`,
+          position: Cesium.Cartesian3.fromDegrees(coordinates[0], coordinates[1]),
+          billboard: {
+            image: icono,
+            height: 80,
+            verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+            horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+            disableDepthTestDistance: Number.POSITIVE_INFINITY,
+            color: Cesium.Color.WHITE,
+            scale: 1.0,
+            show: true,
+            // Forzar visibilidad a cualquier distancia
+            scaleByDistance: new Cesium.NearFarScalar(0.0, 1.0, Number.POSITIVE_INFINITY, 1.0),
+            distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0.0, Number.POSITIVE_INFINITY),
+            alignedAxis: Cesium.Cartesian3.ZERO,
+            pixelOffset: Cesium.Cartesian2.ZERO,
+            eyeOffset: Cesium.Cartesian3.ZERO,
+            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+          },
+          properties: {
+            type: 'entorno',
+            fid: fid,
+            tipo: tipo,
+            nombre: nombre,
+            coordinates: coordinates
+          }
+        });
+        
+        positions.push(Cesium.Cartesian3.fromDegrees(coordinates[0], coordinates[1]));
+      });
+      
+      // Configurar interacciones para los marcadores del entorno
+      setupEntornoInteractions();
+      
+      // Ajustar la cámara para mostrar todos los marcadores
+      if (positions.length > 0) {
+        const boundingSphere = Cesium.BoundingSphere.fromPoints(positions);
+        viewer.camera.flyToBoundingSphere(boundingSphere, {
+          duration: 2.0,
+          offset: new Cesium.HeadingPitchRange(0, Cesium.Math.toRadians(-45), boundingSphere.radius * 4)
+        });
+      }
+      
+    }
+  } catch (error) {
+    console.error('Error al cargar los marcadores del entorno:', error);
+  }
+}
+
+// Función para configurar interacciones de los marcadores del entorno
+function setupEntornoInteractions() {
+  // Evento de hover para cambiar cursor y escala
+  viewer.screenSpaceEventHandler.setInputAction(function onMouseMove(movement) {
+    // 1) Intento rápido con drillPick
+    const picked = viewer.scene.drillPick(movement.endPosition) || [];
+    let entity = picked.map((p) => p.id).find((id) => id && id.id && id.id.startsWith("entorno_")) || null;
+
+    // Restaurar hover si nos movimos fuera o a otra entidad
+    if (highlightedEntorno && highlightedEntorno !== entity) {
+      // Restaurar escala original
+      if (highlightedEntornoOriginalScale !== null) {
+        highlightedEntorno.billboard.scale = highlightedEntornoOriginalScale;
+      }
+      highlightedEntorno = null;
+      highlightedEntornoOriginalScale = null;
+      viewer.scene.requestRender();
+    }
+
+    if (entity && entity.id && entity.id.startsWith("entorno_")) {
+      // Aplicar hover si no es el mismo marcador
+      if (highlightedEntorno !== entity) {
+        highlightedEntorno = entity;
+        // Guardar la escala original
+        highlightedEntornoOriginalScale = entity.billboard.scale._value || 1.0;
+        // Hacer el marcador un poco más grande
+        entity.billboard.scale = highlightedEntornoOriginalScale * 1.2;
+        viewer.scene.requestRender();
+      }
+      
+      // Establecer cursor pointer
+      viewer.scene.canvas.style.cursor = "pointer";
+    } else {
+      // Si no hay marcador del entorno bajo el mouse, volver cursor a default
+      viewer.scene.canvas.style.cursor = "default";
+    }
+  }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
+  // Evento de click para marcadores del entorno
+  viewer.screenSpaceEventHandler.setInputAction(function onLeftClick(movement) {
+    const pickedObject = viewer.scene.pick(movement.position);
+
+    // Si no se clicó sobre nada, salir
+    if (!Cesium.defined(pickedObject)) return;
+
+    // Verificar si el clic fue sobre un Entity con billboard
+    if (pickedObject.id && pickedObject.id.billboard) {
+      const locationId = pickedObject.id.id;
+      const locationProperties = pickedObject.id.properties;
+      
+      // Si es un marcador del entorno, mostrar modal
+      if (locationId && locationId.startsWith("entorno_")) {
+        console.log("Se hizo clic en el marcador del entorno:", locationId);
+        const position = locationProperties.coordinates._value;
+        const nombre = locationProperties.nombre._value;
+        const tipo = locationProperties.tipo._value;
+        
+        // Mostrar modal con información del lugar
+        showLocationModal(nombre, `${tipo} - ${nombre}`, position, tipo);
+      }
+    }
+  }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 }
 
 // Función para crear la línea
@@ -309,7 +963,6 @@ async function createLine() {
         },
         label: {
           text: location.name,
-          font: 'bold 16px sans-serif',
           fillColor: Cesium.Color.WHITE,
           outlineColor: Cesium.Color.BLACK,
           outlineWidth: 3,
@@ -339,8 +992,20 @@ async function createLine() {
       if (pickedObject.id && pickedObject.id.billboard) {
         const locationId = pickedObject.id.id;
         const locationProperties = pickedObject.id.properties;
-        if (locationId.startsWith("marcador_") || locationId.startsWith("area_comun_")) {
-          console.log("Se hizo clic en el marcador:", locationId);
+        
+        // Si es un marcador del entorno (marcador_1 o marcador_2), mostrar solo el modal
+        if (locationId === "marcador_1" || locationId === "marcador_2") {
+          console.log("Se hizo clic en el marcador del entorno:", locationId);
+          const position = locationProperties.position._value;
+          
+          // Solo mostrar el modal con información (la ruta se creará al presionar el botón)
+          const title = locationProperties.title._value;
+          const description = locationProperties.description._value;
+          showLocationModal(title, description, position);
+        }
+        // Si es un marcador de área común, mostrar solo el modal
+        else if (locationId.startsWith("area_comun_")) {
+          console.log("Se hizo clic en el marcador de área común:", locationId);
           const title = locationProperties.title._value;
           const description = locationProperties.description._value;
           const position = locationProperties.position._value;
@@ -378,7 +1043,7 @@ function showCommonAreasModal() {
   document.getElementById('commonAreasModalOverlay').style.display = 'flex';
 }
 // Función para mostrar el modal de ubicación
-function showLocationModal(title, description, coordinates) {
+function showLocationModal(title, description, coordinates, tipo = null) {
   const modal = document.getElementById('locationModalOverlay');
   const titleEl = document.getElementById('locationModalTitle');
   const addressEl = document.getElementById('locationModalAddress');
@@ -388,18 +1053,30 @@ function showLocationModal(title, description, coordinates) {
   if (modal && titleEl && addressEl && timeEl && routeBtn) {
     titleEl.textContent = title;
     addressEl.textContent = description;
-    timeEl.textContent = "5-10 min";
+    timeEl.textContent = ""; // No mostrar tiempo inicialmente
 
     // Clonar y reemplazar el botón para limpiar listeners anteriores
     const newRouteBtn = routeBtn.cloneNode(true);
     routeBtn.parentNode.replaceChild(newRouteBtn, routeBtn);
 
     // Agregar evento click al botón de ruta
-    newRouteBtn.addEventListener('click', () => {
+    newRouteBtn.addEventListener('click', async () => {
       console.log('Calculando ruta hacia:', title);
-      calculateRoute(startLonLat, coordinates);
-      closeLocationModal(); // Cierra el modal después de iniciar el cálculo
-    }); modal.style.display = 'flex';
+      timeEl.textContent = "Calculando...";
+      
+      const result = await calculateRoute(startLonLat, coordinates, tipo);
+      
+      if (result && result.success) {
+        timeEl.textContent = `${result.duration} min (${Math.round(result.distance/1000)} km)`;
+        console.log(`✅ Tiempo actualizado: ${result.duration} min`);
+      } else {
+        timeEl.textContent = "Error al calcular";
+        console.error('❌ Error al calcular la ruta');
+      }
+      
+      // NO cerrar el modal - mantenerlo abierto
+    }); 
+    modal.style.display = 'flex';
   } else {
     console.error('No se encontraron los elementos del modal. Verifica los IDs en index.html.');
   }
@@ -424,7 +1101,7 @@ if (modalEl) modalEl.style.display = "none";
 //   );
 // });
 
-const disponible = Cesium.Color.fromCssColorString('#4CAF50');
+const disponible = Cesium.Color.fromCssColorString('#22c55e').withAlpha(0.7);
 
 // Load terreno polygon from GeoJSON
 Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
@@ -453,8 +1130,8 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
         const labelEntity = viewer.entities.add({
           position: center,
           label: {
-            text: number ? number.toString() : '',
-            font: '9pt sans-serif',
+            text: entity.properties.manzana && entity.properties.number ? `${entity.properties.manzana}${entity.properties.number}` : '',
+            font: '900 9pt Arial, sans-serif',
             fillColor: Cesium.Color.WHITE,
             outlineColor: Cesium.Color.GRAY,
             outlineWidth: 2,
@@ -477,16 +1154,24 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
     const referencePoint = Cesium.Cartesian3.fromDegrees(-71.89764735370906, -17.099287141165803);
     // Rango fijo donde deben mostrarse (ej: hasta 1000 km de altura)
     const MAX_DISTANCE = 550;
-    viewer.entities.add({
+    // Crear marcador Mykonos con nueva imagen SVG
+    const mykonosMarker = viewer.entities.add({
+      id: "mykonos_marker",
       name: "Mykonos",
       position: Cesium.Cartesian3.fromDegrees(-71.89764735370906, -17.099287141165803),
       billboard: {
-        image: "assets/mykonos_marker.webp",
+        image: "img/mikonos_marker.svg",
         width: 150,
-        height: 150,
+        height: 200,
         verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+        horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
         disableDepthTestDistance: Number.POSITIVE_INFINITY,
-        distanceDisplayCondition: new Cesium.DistanceDisplayCondition(550, 1000000)
+        alignedAxis: Cesium.Cartesian3.ZERO,
+        pixelOffset: Cesium.Cartesian2.ZERO,
+        eyeOffset: Cesium.Cartesian3.ZERO,
+        scaleByDistance: new Cesium.NearFarScalar(100.0, 1.0, 2000.0, 0.5),
+        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+        show: true
       },
     });
     // Umbral de distancia
@@ -501,6 +1186,7 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
         referencePoint
       );
 
+      // Controlar visibilidad de labels de lotes
       polygonLabels.forEach(entity => {
         const show = distance < MAX_DISTANCE;
         if (entity.label) {
@@ -511,8 +1197,32 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
             entity.label.scale = 1.0;
           }
         }
+      });
 
+      // Controlar visibilidad del marcador Mykonos
+      if (mykonosMarker && mykonosMarker.billboard) {
+        // Mostrar Mykonos solo cuando estás lejos (>=550m, misma distancia donde desaparecen los labels)
+        mykonosMarker.billboard.show = distance >= MAX_DISTANCE;
+      }
 
+      // Controlar visibilidad de todos los marcadores excepto entorno
+      const allEntities = viewer.entities.values;
+      allEntities.forEach(entity => {
+        // Excluir marcadores de entorno y el marcador Mykonos
+        if (entity.id && 
+            !entity.id.startsWith("marcador_") && 
+            !entity.id.startsWith("entorno_") && 
+            entity.id !== "mykonos_marker" &&
+            entity.billboard) {
+          
+          // Mostrar marcadores cuando estás a menos de 550m (misma distancia que los labels)
+          entity.billboard.show = distance < MAX_DISTANCE;
+          
+          // También controlar labels si existen
+          if (entity.label) {
+            entity.label.show = distance < MAX_DISTANCE;
+          }
+        }
       });
     });
     // Add the data source to the viewer after processing
@@ -558,14 +1268,49 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
 
     const getDireccion = (entity) => {
       if (!entity || !entity.properties) return undefined;
-      const direccion = entity.properties.direccion;
-      return typeof direccion?.getValue === "function" ? direccion.getValue() : direccion;
+      const props = entity.properties;
+      const direccion = props.direccion;
+      // Compatibilidad nueva: construir desde manzana/lote si existe
+      const manzana = props.manzana;
+      const lote = props.lote;
+      const valDireccion = typeof direccion?.getValue === "function" ? direccion.getValue() : direccion;
+      const valManzana = typeof manzana?.getValue === "function" ? manzana.getValue() : manzana;
+      const valLote = typeof lote?.getValue === "function" ? lote.getValue() : lote;
+      if (!valDireccion && (valManzana || valLote)) {
+        const mz = valManzana ? String(valManzana).trim() : '';
+        const lt = valLote ? String(valLote).trim() : '';
+        return `Mz. ${mz} - Lote ${lt}`.trim();
+      }
+      return valDireccion;
     };
 
     const getArea = (entity) => {
       if (!entity || !entity.properties) return undefined;
       const area = entity.properties.area;
-      return typeof area?.getValue === "function" ? area.getValue() : area;
+      const raw = typeof area?.getValue === "function" ? area.getValue() : area;
+      if (typeof raw === 'string') {
+        const match = raw.replace(',', '.').match(/[0-9]+(?:\.[0-9]+)?/);
+        return match ? `${parseFloat(match[0]).toFixed(2)} m²` : raw;
+      }
+      if (typeof raw === 'number') {
+        return `${raw.toFixed(2)} m²`;
+      }
+      return raw;
+    };
+
+    const getEstado = (entity) => {
+      if (!entity || !entity.properties) return undefined;
+      const estado = entity.properties.estado || entity.properties.status;
+      return typeof estado?.getValue === "function" ? estado.getValue() : estado;
+    };
+
+    const getPrecio = (entity) => {
+      if (!entity || !entity.properties) return undefined;
+      const precio = entity.properties.precio || entity.properties.price;
+      const val = typeof precio?.getValue === "function" ? precio.getValue() : precio;
+      if (val == null || val === '') return undefined;
+      const num = typeof val === 'string' ? parseFloat(val.replace(',', '.')) : val;
+      return isNaN(num) ? undefined : num;
     };
 
     // Helpers: obtener posiciones del polígono y prueba punto-en-polígono
@@ -718,7 +1463,6 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
       const areaLote = getArea(entity);
       const props = entity.properties || {};
 
-      const titleEl = document.getElementById('modalTitle');
       const lotEl = document.getElementById('modalLot');
       const statusEl = document.getElementById('modalStatus');
       const priceEl = document.getElementById('modalPrice');
@@ -728,44 +1472,58 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
       const frontEl = document.getElementById('modalFront');
       const backEl = document.getElementById('modalBack');
 
-      // Títulos básicos
-      if (titleEl) titleEl.textContent = `MIKONOS`.trim();
-      if (lotEl) lotEl.textContent = `${direccion ?? ''}`;
+      // Información del lote
+      if (lotEl) lotEl.textContent = direccion || 'Lote sin identificar';
 
-      // Status y precio desde propiedades si existen
-      const statusVal = typeof props.status?.getValue === 'function' ? props.status.getValue() : props.status;
-      const priceVal = typeof props.price?.getValue === 'function' ? props.price.getValue() : props.price;
-      if (statusEl) statusEl.textContent = statusVal || 'Disponible';
-      if (priceEl) priceEl.textContent = priceVal ? `${priceVal}` : '$ 27,947.50';
+      // Status y precio desde propiedades
+      const statusVal = getEstado(entity) || 'Disponible';
+      const priceNum = getPrecio(entity);
+      if (statusEl) {
+        statusEl.textContent = statusVal || 'Disponible';
+        // Aplicar clase CSS según el estado
+        statusEl.className = 'status-badge';
+        if (statusVal.toLowerCase() === 'vendido') {
+          statusEl.style.backgroundColor = '#ef4444';
+        } else if (statusVal.toLowerCase() === 'reservado') {
+          statusEl.style.backgroundColor = '#eab308';
+        } else {
+          statusEl.style.backgroundColor = '#22c55e';
+        }
+      }
+      
+      if (priceEl) {
+        priceEl.textContent = (typeof priceNum === 'number') ? `$ ${priceNum.toLocaleString()}` : '$ 0';
+      }
 
-      // Área y lados
+      // Área
+      if (areaEl) areaEl.textContent = areaLote || '0.00 m²';
+
+      // Calcular lados del polígono
       const { area, edges } = computeAreaAndEdges(entity);
-      if (areaEl) areaEl.textContent = areaLote;
-
+      
       // Asignar lados si hay al menos 4
       if (edges.length >= 4) {
-        // Heurística: ordenar índices por longitud y tomar dos más largos como frente/fondo
-        const idxs = edges.map((v, i) => ({ i, v })).sort((a, b) => b.v - a.v);
-        const frontLen = idxs[0].v;
-        const backLen = idxs[1].v;
-        // Los otros dos como izquierda/derecha (no necesariamente orientación real)
-        const others = edges.filter((_, k) => k !== idxs[0].i && k !== idxs[1].i);
-        const leftLen = others[0];
-        const rightLen = others[1];
+        // Ordenar por longitud y asignar los más largos como frente/fondo
+        const sortedEdges = edges.map((v, i) => ({ i, v })).sort((a, b) => b.v - a.v);
+        const frontLen = sortedEdges[0].v;
+        const backLen = sortedEdges[1].v;
+        const others = edges.filter((_, k) => k !== sortedEdges[0].i && k !== sortedEdges[1].i);
+        const leftLen = others[0] || 0;
+        const rightLen = others[1] || 0;
 
         if (frontEl) frontEl.textContent = metersToML(frontLen);
         if (backEl) backEl.textContent = metersToML(backLen);
         if (leftEl) leftEl.textContent = metersToML(leftLen);
         if (rightEl) rightEl.textContent = metersToML(rightLen);
       } else {
-        if (frontEl) frontEl.textContent = '-';
-        if (backEl) backEl.textContent = '-';
-        if (leftEl) leftEl.textContent = '-';
-        if (rightEl) rightEl.textContent = '-';
+        if (frontEl) frontEl.textContent = '0.00ML';
+        if (backEl) backEl.textContent = '0.00ML';
+        if (leftEl) leftEl.textContent = '0.00ML';
+        if (rightEl) rightEl.textContent = '0.00ML';
       }
     };
 
-    // Hover: resaltar en amarillo (activo incluso con modal abierto, excepto sobre el seleccionado)
+    // Hover: resaltar en amarillo (siempre activo)
     handler.setInputAction((movement) => {
       // Evitar hover por una ventana corta después de cerrar el modal
       if (Date.now() < hoverSuppressUntil) {
@@ -809,14 +1567,20 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
         }
         highlighted = null;
         highlightedOriginalMaterial = null;
-        viewer.scene.canvas.style.cursor = "default";
+        // Solo cambiar cursor a default si no estamos en modo fotos
+        if (!document.getElementById('fotos').classList.contains('active')) {
+          viewer.scene.canvas.style.cursor = "default";
+        }
         viewer.scene.requestRender();
       }
 
       if (entity) {
         const fid = getFid(entity);
         if (fid !== 3 && fid !== undefined) {
-          viewer.scene.canvas.style.cursor = "pointer";
+          // Solo cambiar cursor a pointer si no estamos en modo fotos
+          if (!document.getElementById('fotos').classList.contains('active')) {
+            viewer.scene.canvas.style.cursor = "pointer";
+          }
           // Evitar resaltar si ya es el seleccionado
           if (highlighted !== entity && entity !== selected) {
             highlighted = entity;
@@ -826,10 +1590,16 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
             viewer.scene.requestRender();
           }
         } else {
-          viewer.scene.canvas.style.cursor = "default";
+          // Solo cambiar cursor a default si no estamos en modo fotos
+          if (!document.getElementById('fotos').classList.contains('active')) {
+            viewer.scene.canvas.style.cursor = "default";
+          }
         }
       } else {
-        viewer.scene.canvas.style.cursor = "default";
+        // Solo cambiar cursor a default si no estamos en modo fotos
+        if (!document.getElementById('fotos').classList.contains('active')) {
+          viewer.scene.canvas.style.cursor = "default";
+        }
       }
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
@@ -882,6 +1652,31 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
     window.cesiumClearSelection = clearSelection;
     window.cesiumOnModalClosed = onModalClosed;
 
+    // Exponer función para ajustar la opacidad de los lotes (disponibles)
+    // alpha debe ser un número entre 0 y 1. Ej.: 0 → transparente, 0.7 → visible
+    window.setTerrenosAlpha = (alpha) => {
+      try {
+        const entitiesAll = ds.entities.values.filter((e) => e.polygon);
+        entitiesAll.forEach((e) => {
+          const fid = getFid(e);
+          if (fid === 0) return; // omitir polígono perimetral
+          // Mantener transparente el fid=3 según estilo original
+          const newMaterial = (fid === 3)
+            ? disponible.withAlpha(0)
+            : disponible.withAlpha(alpha);
+          // Actualizar base material para que hover/restauración funcionen
+          e._baseMaterial = newMaterial;
+          // No sobrescribir el color de selección activo
+          if (selected !== e) {
+            e.polygon.material = newMaterial;
+          }
+        });
+        viewer.scene.requestRender?.();
+      } catch (err) {
+        console.error('No se pudo ajustar la opacidad de lotes:', err);
+      }
+    };
+
     handler.setInputAction((click) => {
       const picked = viewer.scene.drillPick(click.position) || [];
       let entity = picked.map((p) => p.id).find((id) => id && id.polygon) || null;
@@ -907,6 +1702,9 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
       if (fid === undefined) return; // excluir
       console.log("fid " + fid);
 
+      // Limpiar todos los modales, marcadores y elementos de sidebar-menu
+      reiniciarMenu();
+
       // Actualizar modal y mostrar
       updateModalWithEntity(entity);
       // Marcar selección activa
@@ -921,31 +1719,18 @@ Cesium.GeoJsonDataSource.load("./data/terrenos.geojson", {
 // Fly the camera to San Francisco at the given longitude, latitude, and height.
 viewer.camera.flyTo(targetLocation);
 
-const coordinates = [
-  -71.898877985447115, -17.098770803958921,
-  -71.897965133484803, -17.098126203614402,
-  -71.896422217120715, -17.099625276093949,
-  -71.897406406809651, -17.100330704154146,
-  -71.898878026501848, -17.098770927123116
-];
+try {
+  const imageryLayer = viewer.imageryLayers.addImageryProvider(
+    await Cesium.IonImageryProvider.fromAssetId(3729751),
+  );
+  
+  await viewer.zoomTo(imageryLayer);
+} catch (error) {
+  console.log(error);
+}
 
-// Carga la imagen como un material. Usa la ruta a tu archivo .png
-const mykonoMaterial = new Cesium.ImageMaterialProperty({
-  image: './img/img.jpg',
-  repeat: new Cesium.Cartesian2(1.0, 1.0) // Asegura que la imagen no se repita
-});
 
-// Agrega la entidad de polígono al visor
-const mykonoLotEntity = viewer.entities.add({
-  polygon: {
-    // Convierte el array de coordenadas en un objeto de jerarquía de polígono
-    hierarchy: Cesium.Cartesian3.fromDegreesArray(coordinates),
-    // Asigna el material de imagen
-    material: mykonoMaterial,
-    // Esto hace que el polígono se adhiera al terreno
-    classificationType: Cesium.ClassificationType.TERRAIN
-  }
-});
+
 
 // Coordenadas del polígono
 const polygonCoordinates = [
@@ -1076,4 +1861,45 @@ const polygonCenter = calculatePolygonCenter(polygonCoordinates);
       viewer.camera.flyTo(targetLocation);
     });
   }
+
+  // Botón GRID: toggle de opacidad de lotes
+  const btnGrid = byId('grid');
+  if (btnGrid) {
+    btnGrid.addEventListener('click', () => {
+      // Toggle de modo grid
+      window.isGridModeActive = !window.isGridModeActive;
+      if (window.setTerrenosAlpha) {
+        try {
+          if (window.isGridModeActive) {
+            window.setTerrenosAlpha(0.0);
+            btnGrid.classList.add('active');
+          } else {
+            window.setTerrenosAlpha(0.7);
+            btnGrid.classList.remove('active');
+          }
+        } catch (_) { /* noop */ }
+      }
+    });
+  }
 })();
+
+// Función para configurar event listeners de los botones del entorno
+function setupEntornoButtonsListeners() {
+  const entornoButtons = document.querySelectorAll('#entornoButtonsContainer .entorno-button');
+  
+  entornoButtons.forEach((button, index) => {
+    // Remover listeners anteriores si existen
+    button.removeEventListener('click', button._entornoClickHandler);
+    
+    // Crear nuevo handler
+    button._entornoClickHandler = () => {
+      const buttonText = button.querySelector('.entorno-button-text').textContent;
+      
+      // Filtrar marcadores por tipo
+      filterEntornoByType(buttonText);
+    };
+    
+    // Agregar el nuevo listener
+    button.addEventListener('click', button._entornoClickHandler);
+  });
+}

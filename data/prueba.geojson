@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "prueba",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "fid": 2, "nombre": "puerto mejia" }, "geometry": { "type": "Point", "coordinates": [ -71.899786004470542, -17.113818039323291 ] } },
+{ "type": "Feature", "properties": { "fid": 1, "nombre": "comisaria" }, "geometry": { "type": "Point", "coordinates": [ -71.905043443506756, -17.102407284107478 ] } }
+]
+}
