@@ -3,15 +3,15 @@
    ======================================== */
 *,
 body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 #cesiumContainer {
-    height: 100vh;
-    width: 100vw;
+  height: 100vh;
+  width: 100vw;
 }
 
 /* ========================================
@@ -21,63 +21,63 @@ body {
 .cesium-widget-credits,
 .cesium-credit-textContainer,
 .cesium-credit-imageContainer {
-    display: none !important;
+  display: none !important;
 }
 
 /* ========================================
    SPLASH SCREEN (PANTALLA DE INICIO)
    ======================================== */
 .splash-screen {
-    background-color: #333;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+  background-color: #333;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background-image: url("../img/fondo_inicio.svg");
   background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    opacity: 1;
-    transition: opacity 0.8s ease-out;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 0.8s ease-out;
 }
 
 .splash-screen.fade-out {
-    opacity: 0;
-    pointer-events: none;
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* ========================================
    LOGO Y ANIMACIONES
    ======================================== */
 .logo {
-    width: 150px;
-    height: 150px;
-    animation: pulse 1.5s ease-in-out infinite alternate;
+  width: 150px;
+  height: 150px;
+  animation: pulse 1.5s ease-in-out infinite alternate;
 }
 
 @keyframes pulse {
-    from {
-        transform: scale(1);
-        opacity: 0.8;
-    }
-    to {
-        transform: scale(1.1);
-        opacity: 1;
-    }
+  from {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  to {
+    transform: scale(1.1);
+    opacity: 1;
+  }
 }
 
 .card {
   background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 15px;
-    padding: 30px;
-    margin: 30px auto;
-    max-width: 500px;
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 30px;
+  margin: 30px auto;
+  max-width: 500px;
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -85,284 +85,284 @@ body {
    NAVEGACIÓN PRINCIPAL
    ======================================== */
 .nav-container {
-    position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1001;
-    pointer-events: auto;
-    width: fit-content;
-    max-width: calc(100vw - 40px);
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1001;
+  pointer-events: auto;
+  width: fit-content;
+  max-width: calc(100vw - 40px);
 }
 
 .nav-group {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    flex-wrap: wrap;
-    justify-content: center;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .nav-buttons {
-    display: flex;
-    gap: 5px;
-    background: white;
-    border-radius: 25px;
-    padding: 3px;
-    height: 46px;
-    min-width: fit-content;
+  display: flex;
+  gap: 5px;
+  background: white;
+  border-radius: 25px;
+  padding: 3px;
+  height: 46px;
+  min-width: fit-content;
 }
 
 .nav-button {
-    padding: 8px 20px;
-    border: none;
-    background: transparent;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 14px;
-    color: #333;
-    transition: all 0.3s ease;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    white-space: nowrap;
-    min-width: fit-content;
+  padding: 8px 20px;
+  border: none;
+  background: transparent;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: all 0.3s ease;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  min-width: fit-content;
 }
 
 .nav-button.active {
   background-color: #4a4a4a;
-    color: white;
+  color: white;
 }
 
 .nav-entorno {
-    display: flex;
-    gap: 5px;
-    background: rgba(74, 74, 74, 0.9);
-    border-radius: 25px;
-    padding: 3px;
-    height: 46px;
-    min-width: fit-content;
+  display: flex;
+  gap: 5px;
+  background: rgba(74, 74, 74, 0.9);
+  border-radius: 25px;
+  padding: 3px;
+  height: 46px;
+  min-width: fit-content;
 }
 
 .entorno-button {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 16px;
-    backdrop-filter: blur(5px);
-    background: rgba(14, 14, 14, 0.8);
-    border: 0.5px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    min-width: 120px;
-    justify-content: flex-start;
-    color: white;
-    font-size: 14px;
-    height: 40px;
-    white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  backdrop-filter: blur(5px);
+  background: rgba(14, 14, 14, 0.8);
+  border: 0.5px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+  justify-content: flex-start;
+  color: white;
+  font-size: 14px;
+  height: 40px;
+  white-space: nowrap;
 }
 
 /* ========================================
    BOTÓN CIRCULAR 360°
    ======================================== */
 .circular-360-button {
-    width: 50px;
-    height: 50px;
-    border: none;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: bold;
-    font-size: 10px;
-    text-align: center;
-    line-height: 1;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    position: relative;
-    overflow: hidden;
+  width: 50px;
+  height: 50px;
+  border: none;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 10px;
+  text-align: center;
+  line-height: 1;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
 }
 
 .circular-360-button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 .circular-360-button:before {
   content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: linear-gradient(
     45deg,
     rgba(255, 255, 255, 0.1) 0%,
     rgba(255, 255, 255, 0) 100%
   );
-    border-radius: 50%;
+  border-radius: 50%;
 }
 
 .button-360-text {
-    position: relative;
-    z-index: 2;
+  position: relative;
+  z-index: 2;
 }
 
 /* ========================================
    MODAL 360° (FOTOS PANORÁMICAS)
    ======================================== */
 .modal-360-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.8);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .modal-360-overlay.active {
-    display: flex;
-    opacity: 1;
+  display: flex;
+  opacity: 1;
 }
 
 .modal-360-content {
-    background: white;
-    border-radius: 20px;
-    width: 90vw;
-    height: 80vh;
-    max-width: 1200px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-    animation: modalSlideIn 0.4s ease-out;
+  background: white;
+  border-radius: 20px;
+  width: 90vw;
+  height: 80vh;
+  max-width: 1200px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+  animation: modalSlideIn 0.4s ease-out;
 }
 
 @keyframes modalSlideIn {
-    from {
-        transform: scale(0.8);
-        opacity: 0;
-    }
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .modal-360-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 20px 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .modal-360-title {
-    font-size: 24px;
-    font-weight: 700;
-    margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
 }
 
 .modal-360-close {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 28px;
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s ease;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
 }
 
 .modal-360-close:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .modal-360-viewer {
-    width: 100%;
-    height: calc(100% - 80px);
-    position: relative;
-    overflow: hidden;
-    background: #f5f5f5;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  width: 100%;
+  height: calc(100% - 80px);
+  position: relative;
+  overflow: hidden;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .viewer-360-container {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    cursor: grab;
-    overflow: hidden;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  cursor: grab;
+  overflow: hidden;
 }
 
 .viewer-360-container:active {
-    cursor: grabbing;
+  cursor: grabbing;
 }
 
 .panorama-image {
-    width: 200%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.1s ease;
-    user-select: none;
+  width: 200%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.1s ease;
+  user-select: none;
 }
 
 .viewer-controls {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 10px;
-    background: rgba(0, 0, 0, 0.6);
-    padding: 10px 20px;
-    border-radius: 25px;
-    backdrop-filter: blur(10px);
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 10px 20px;
+  border-radius: 25px;
+  backdrop-filter: blur(10px);
 }
 
 .control-button {
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 15px;
-    cursor: pointer;
-    font-size: 12px;
-    transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.3s ease;
 }
 
 .control-button:hover {
-    background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .loading-spinner {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 50px;
-    height: 50px;
-    border: 3px solid rgba(102, 126, 234, 0.3);
-    border-top: 3px solid #667eea;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(102, 126, 234, 0.3);
+  border-top: 3px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
@@ -375,259 +375,522 @@ body {
 }
 
 /* ========================================
-   MODAL PRINCIPAL (LOTES)
+   MODAL PRINCIPAL (LOTES) - CLASES ESPECÍFICAS
+   ======================================== */
+.main-modal-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: auto;
+  height: 100vh;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 20px;
+  z-index: 1000;
+}
+
+.main-modal {
+  padding: 2rem 3rem;
+  backdrop-filter: blur(5px);
+  background: rgba(14, 14, 14, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 25px;
+  color: white;
+  width: 28rem;
+  min-width: 300px;
+  max-width: 90vw;
+  max-height: 90vh;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  animation: mainModalSlideInFromRight 0.4s ease-out;
+  pointer-events: auto;
+  position: relative;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes mainModalSlideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.main-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.main-modal-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-modal-logo-image {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  max-width: 200px;
+  max-height: 200px;
+  min-width: 40px;
+  min-height: 40px;
+}
+
+.main-modal-content {
+  padding: 1rem;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.main-lot-identification {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  gap: 12px;
+  border-bottom: 1px solid;
+  border-image: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.2) 15%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0.2) 85%, transparent 100%) 1;
+}
+
+.main-lot-box {
+  border: 1px solid #22c55e6b;
+  border-radius: 8px;
+  padding: 8px 16px;
+  background: transparent;
+}
+
+.main-lot-text {
+  font-size: 16px;
+  color: white;
+  font-weight: 600;
+}
+
+.main-status-badge {
+  background-color: #22c55e;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.main-property-details {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid;
+  border-image: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.2) 15%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0.2) 85%, transparent 100%) 1;
+}
+
+.main-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+}
+
+.main-detail-label {
+  font-size: 16px;
+  color: white;
+  font-weight: 500;
+}
+
+.main-detail-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+}
+
+.main-separator {
+  height: 1px;
+  background: #444;
+  margin: 20px 0;
+}
+
+.main-boundaries-section {
+  margin-bottom: 32px;
+}
+
+.main-boundaries-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.main-boundaries-card {
+  background: rgba(14, 14, 14, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.main-boundary-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.main-boundary-item:not(:last-child) {
+  padding-bottom: 1rem;
+}
+
+.main-boundary-icon {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.main-boundary-icon-svg {
+  width: 14px;
+  height: 14px;
+}
+
+.main-boundary-label {
+  flex: 1;
+  font-size: 14px;
+  color: white;
+  font-weight: 500;
+}
+
+.main-boundary-value {
+  font-size: 14px;
+  color: white;
+}
+
+.main-whatsapp-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #333 0%, #444 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.main-whatsapp-btn:hover {
+  background: linear-gradient(135deg, #444 0%, #555 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.main-whatsapp-btn i {
+  font-size: 20px;
+}
+
+.main-back-link {
+  position: relative;
+  background: none;
+  border: none;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px;
+  border-radius: 0;
+  transition: color 0.3s ease;
+}
+
+.main-back-link:hover {
+  color: #ccc;
+}
+
+.main-back-link i {
+  font-size: 14px;
+}
+
+.main-back-link span {
+  font-weight: 500;
+}
+
+/* ========================================
+   MODAL PRINCIPAL (LOTES) - CLASES ORIGINALES (MANTENER PARA COMPATIBILIDAD)
    ======================================== */
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: auto;
-    height: 100vh;
-    background: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding-right: 20px;
-    z-index: 1000;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: auto;
+  height: 100vh;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 20px;
+  z-index: 1000;
 }
 
 .back-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: rgba(42, 42, 42, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    font-weight: 500;
-    font-size: 16px;
-    transition: all 0.3s ease;
-    border-radius: 8px;
-    z-index: 1002;
-    pointer-events: auto;
-    backdrop-filter: blur(10px);
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(42, 42, 42, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-weight: 500;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  z-index: 1002;
+  pointer-events: auto;
+  backdrop-filter: blur(10px);
 }
 
 .back-btn:hover {
-    background: rgba(42, 42, 42, 1);
-    border-color: rgba(255, 255, 255, 0.5);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  background: rgba(42, 42, 42, 1);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .modal {
-    backdrop-filter: blur(5px);
-    background: rgba(14, 14, 14, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    border-radius: 25px;
-    color: white;
-    width: 380px;
-    min-width: 300px;
-    max-width: 90vw;
-    max-height: 90vh;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-    animation: modalSlideInFromRight 0.4s ease-out;
-    pointer-events: auto;
-    position: relative;
-    z-index: 1001;
-    display: flex;
-    flex-direction: column;
+  backdrop-filter: blur(5px);
+  background: rgba(14, 14, 14, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 25px;
+  color: white;
+  width: 380px;
+  min-width: 300px;
+  max-width: 90vw;
+  max-height: 90vh;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  animation: modalSlideInFromRight 0.4s ease-out;
+  pointer-events: auto;
+  position: relative;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
 }
 
 @keyframes modalSlideInFromRight {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 .modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px 24px;
-    flex-shrink: 0;
-    width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 24px;
+  flex-shrink: 0;
+  width: 100%;
 }
 
 .modal-logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .logo-image {
-    width: 120px;
-    height: 120px;
-    object-fit: contain;
-    max-width: 200px;
-    max-height: 200px;
-    min-width: 40px;
-    min-height: 40px;
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  max-width: 200px;
+  max-height: 200px;
+  min-width: 40px;
+  min-height: 40px;
 }
 
 .modal-content {
-    padding: 1rem;
-    overflow-y: auto;
-    flex: 1;
-    min-height: 0;
+  border: 1px solid #555;
+  background-color: #00000091;
+  border-radius: 15px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .lot-identification {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-    gap: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 12px;
 }
 
 .lot-box {
-    border: 1px solid #22c55e;
-    border-radius: 8px;
-    padding: 8px 16px;
-    background: transparent;
+  border: 1px solid #22c55e;
+  border-radius: 8px;
+  padding: 8px 16px;
+  background: transparent;
 }
 
 .lot-text {
-    font-size: 16px;
-    color: white;
-    font-weight: 600;
+  font-size: 16px;
+  color: white;
+  font-weight: 600;
 }
 
 .status-badge {
-    background-color: #22c55e;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 600;
-    text-transform: uppercase;
-    white-space: nowrap;
+  background-color: rgba(29, 183, 121, 1);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: capitalize;
+  white-space: nowrap;
 }
 
 .property-details {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .detail-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
 }
 
 .detail-label {
-    font-size: 16px;
-    color: white;
-    font-weight: 500;
+  font-size: 16px;
+  color: white;
+  font-weight: 500;
 }
 
 .detail-value {
-    font-size: 16px;
-    font-weight: 600;
-    color: white;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
 }
 
 .separator {
-    height: 1px;
-    background: #444;
-    margin: 20px 0;
+  height: 1px;
+  background: #444;
+  margin: 20px 0;
 }
 
 .boundaries-section {
-    margin-bottom: 32px;
+  margin-bottom: 32px;
 }
 
 .boundaries-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: white;
-    text-align: center;
-    margin-bottom: 16px;
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  text-align: center;
+  margin-bottom: 16px;
 }
 
 .boundaries-card {
-    background: #333;
-    border-radius: 12px;
-    padding: 20px;
+  background: #333;
+  border-radius: 12px;
+  padding: 20px;
 }
 
 .boundary-item {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
 }
 
 .boundary-item:not(:last-child) {
-    border-bottom: 1px solid #444;
+  border-bottom: 1px solid #444;
 }
 
 .boundary-icon {
-    width: 32px;
-    height: 32px;
-    background-color: #22c55e;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  background-color: #22c55e;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .boundary-icon-svg {
-    width: 16px;
-    height: 16px;
-    filter: brightness(0) invert(1);
+  width: 16px;
+  height: 16px;
+  filter: brightness(0) invert(1);
 }
 
 .boundary-label {
-    flex: 1;
-    font-size: 16px;
-    color: white;
-    font-weight: 500;
+  flex: 1;
+  font-size: 16px;
+  color: white;
+  font-weight: 500;
 }
 
 .boundary-value {
-    font-size: 16px;
-    font-weight: 600;
-    color: white;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
 }
 
 .whatsapp-btn {
-    width: 100%;
-    background: linear-gradient(135deg, #333 0%, #444 100%);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 16px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  background: linear-gradient(135deg, #333 0%, #444 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .whatsapp-btn:hover {
-    background: linear-gradient(135deg, #444 0%, #555 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #444 0%, #555 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 .whatsapp-btn i {
-    font-size: 20px;
+  font-size: 20px;
 }
 
 /* ========================================
@@ -808,7 +1071,7 @@ body {
 }
 
 .common-areas-card {
-    border: 1px solid rgb(255, 255, 255);
+  border: 1px solid rgb(255, 255, 255);
   background: rgb(0 0 0 / 70%);
   border-radius: 16px;
   transition: all 0.3s ease;
@@ -1116,7 +1379,6 @@ body {
     height: 36px;
   }
 
-
   .circular-360-button {
     width: 42px;
     height: 42px;
@@ -1160,7 +1422,6 @@ body {
     height: 34px;
   }
 
-
   .circular-360-button {
     width: 38px;
     height: 38px;
@@ -1168,255 +1429,472 @@ body {
   }
 }
 
-/* Modal principal responsive */
+/* Modal principal responsive - Clases específicas */
 @media (max-width: 1024px) {
-    .modal-overlay {
-        padding-right: 15px;
-        background: transparent;
-    }
-    
-    .modal {
-        width: 360px;
-        max-width: 90vw;
-    }
-    
-    .back-btn {
-        top: 15px;
-        right: 15px;
-        padding: 6px 12px;
-        font-size: 14px;
-    }
-    
-    .logo-image {
-        width: 100px;
-        height: 100px;
-        max-width: 150px;
-        max-height: 150px;
-    }
+  .main-modal-overlay {
+    padding-right: 15px;
+    background: transparent;
+  }
+
+  .main-modal {
+    width: 360px;
+    max-width: 90vw;
+  }
+
+  .main-modal-logo-image {
+    width: 100px;
+    height: 100px;
+    max-width: 150px;
+    max-height: 150px;
+  }
 }
 
 @media (max-width: 768px) {
-    .modal-overlay {
-        padding-right: 10px;
-        background: transparent;
-    }
-    
-    .modal {
-        width: 340px;
-        max-width: 90vw;
-    }
-    
-    .back-btn {
-        top: 10px;
-        right: 10px;
-        padding: 6px 10px;
-        font-size: 13px;
-    }
-    
-    .modal-header {
-        padding: 16px 20px;
-    }
-    
-    .logo-image {
-        width: 80px;
-        height: 80px;
-        max-width: 120px;
-        max-height: 120px;
-    }
-    
-    .modal-content {
-        padding: 0 20px 20px 20px;
-    }
-    
-    .lot-identification {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 16px;
-    }
-    
-    .lot-box {
-        text-align: center;
-    }
-    
-    .status-badge {
-        text-align: center;
-    }
-    
-    .boundaries-card {
-        padding: 16px;
-    }
-    
-    .boundary-item {
-        gap: 12px;
-        padding: 10px 0;
-    }
-    
-    .boundary-icon {
-        width: 28px;
-        height: 28px;
-    }
-    
-    .boundary-icon-svg {
-        width: 14px;
-        height: 14px;
-    }
-    
-    .boundary-label,
-    .boundary-value {
-        font-size: 14px;
-    }
+  .main-modal-overlay {
+    padding-right: 10px;
+    background: transparent;
+  }
+
+  .main-modal {
+    width: 340px;
+    max-width: 90vw;
+  }
+
+  .main-modal-header {
+    padding: 16px 20px;
+  }
+
+  .main-modal-logo-image {
+    width: 80px;
+    height: 80px;
+    max-width: 120px;
+    max-height: 120px;
+  }
+
+  .main-modal-content {
+    padding: 0 20px 20px 20px;
+  }
+
+  .main-lot-box {
+    text-align: center;
+  }
+
+  .main-status-badge {
+    text-align: center;
+  }
+
+  .main-boundaries-card {
+    padding: 16px;
+  }
+
+  .main-boundary-item {
+    gap: 12px;
+    padding: 10px 0;
+  }
+
+  .main-boundary-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .main-boundary-icon-svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .main-boundary-label,
+  .main-boundary-value {
+    font-size: 14px;
+  }
 }
 
 @media (max-width: 480px) {
-    .modal-overlay {
-        padding-right: 5px;
-        background: transparent;
-    }
-    
-    .modal {
-        width: 300px;
-        max-width: 95vw;
-        border-radius: 16px;
-    }
-    
-    .back-btn {
-        top: 8px;
-        right: 8px;
-        padding: 5px 8px;
-        font-size: 12px;
-    }
-    
-    .modal-header {
-        padding: 12px 16px;
-    }
-    
-    .logo-image {
-        width: 60px;
-        height: 60px;
-        max-width: 100px;
-        max-height: 100px;
-    }
-    
-    .modal-content {
-        padding: 0 16px 16px 16px;
-    }
-    
-    .lot-text {
-        font-size: 14px;
-    }
-    
-    .status-badge {
-        font-size: 12px;
-        padding: 6px 12px;
-    }
-    
-    .detail-label,
-    .detail-value {
-        font-size: 14px;
-    }
-    
-    .boundaries-title {
-        font-size: 16px;
-    }
-    
-    .boundaries-card {
-        padding: 12px;
-    }
-    
-    .whatsapp-btn {
-        padding: 14px;
-        font-size: 14px;
-    }
-    
-    .whatsapp-btn i {
-        font-size: 18px;
-    }
+  .main-modal-overlay {
+    padding-right: 5px;
+    background: transparent;
+  }
+
+  .main-modal {
+    width: 300px;
+    max-width: 95vw;
+    border-radius: 16px;
+  }
+
+  .main-modal-header {
+    padding: 12px 16px;
+  }
+
+  .main-modal-logo-image {
+    width: 60px;
+    height: 60px;
+    max-width: 100px;
+    max-height: 100px;
+  }
+
+  .main-modal-content {
+    padding: 0 16px 16px 16px;
+  }
+
+  .main-lot-text {
+    font-size: 14px;
+  }
+
+  .main-status-badge {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .main-detail-label,
+  .main-detail-value {
+    font-size: 14px;
+  }
+
+  .main-boundaries-title {
+    font-size: 16px;
+  }
+
+  .main-boundaries-card {
+    padding: 12px;
+  }
+
+  .main-whatsapp-btn {
+    padding: 14px;
+    font-size: 14px;
+  }
+
+  .main-whatsapp-btn i {
+    font-size: 18px;
+  }
 }
 
 @media (max-width: 360px) {
-    .modal-overlay {
-        padding-right: 2px;
-        background: transparent;
-    }
-    
-    .modal {
-        width: 280px;
-        max-width: 98vw;
-        border-radius: 12px;
-    }
-    
-    .back-btn {
-        top: 5px;
-        right: 5px;
-        padding: 4px 6px;
-        font-size: 11px;
-    }
-    
-    .modal-header {
-        padding: 10px 12px;
-    }
-    
-    .logo-image {
-        width: 50px;
-        height: 50px;
-        max-width: 80px;
-        max-height: 80px;
-    }
-    
-    .modal-content {
-        padding: 0 12px 12px 12px;
-    }
-    
-    .lot-text {
-        font-size: 12px;
-    }
-    
-    .status-badge {
-        font-size: 10px;
-        padding: 4px 8px;
-    }
-    
-    .detail-label,
-    .detail-value {
-        font-size: 12px;
-    }
-    
-    .boundaries-title {
-        font-size: 14px;
-    }
-    
-    .boundaries-card {
-        padding: 10px;
-    }
-    
-    .boundary-item {
-        gap: 8px;
-        padding: 8px 0;
-    }
-    
-    .boundary-icon {
-        width: 24px;
-        height: 24px;
-    }
-    
-    .boundary-icon-svg {
-        width: 12px;
-        height: 12px;
-    }
-    
-    .boundary-label,
-    .boundary-value {
-        font-size: 12px;
-    }
-    
-    .whatsapp-btn {
-        padding: 12px;
-        font-size: 12px;
-    }
-    
-    .whatsapp-btn i {
-        font-size: 16px;
-    }
+  .main-modal-overlay {
+    padding-right: 2px;
+    background: transparent;
+  }
+
+  .main-modal {
+    width: 280px;
+    max-width: 98vw;
+    border-radius: 12px;
+  }
+
+  .main-modal-header {
+    padding: 10px 12px;
+  }
+
+  .main-modal-logo-image {
+    width: 50px;
+    height: 50px;
+    max-width: 80px;
+    max-height: 80px;
+  }
+
+  .main-modal-content {
+    padding: 0 12px 12px 12px;
+  }
+
+  .main-lot-text {
+    font-size: 12px;
+  }
+
+  .main-status-badge {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+
+  .main-detail-label,
+  .main-detail-value {
+    font-size: 12px;
+  }
+
+  .main-boundaries-title {
+    font-size: 14px;
+  }
+
+  .main-boundaries-card {
+    padding: 10px;
+  }
+
+  .main-boundary-item {
+    gap: 8px;
+    padding: 8px 0;
+  }
+
+  .main-boundary-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .main-boundary-icon-svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .main-boundary-label,
+  .main-boundary-value {
+    font-size: 12px;
+  }
+
+  .main-whatsapp-btn {
+    padding: 12px;
+    font-size: 12px;
+  }
+
+  .main-whatsapp-btn i {
+    font-size: 16px;
+  }
+}
+
+/* Modal principal responsive - Clases originales (mantener para compatibilidad) */
+@media (max-width: 1024px) {
+  .modal-overlay {
+    padding-right: 15px;
+    background: transparent;
+  }
+
+  .modal {
+    width: 360px;
+    max-width: 90vw;
+  }
+
+  .back-btn {
+    top: 15px;
+    right: 15px;
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+
+  .logo-image {
+    width: 100px;
+    height: 100px;
+    max-width: 150px;
+    max-height: 150px;
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding-right: 10px;
+    background: transparent;
+  }
+
+  .modal {
+    width: 340px;
+    max-width: 90vw;
+  }
+
+  .back-btn {
+    top: 10px;
+    right: 10px;
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .modal-header {
+    padding: 16px 20px;
+  }
+
+  .logo-image {
+    width: 80px;
+    height: 80px;
+    max-width: 120px;
+    max-height: 120px;
+  }
+
+  .modal-content {
+    padding: 0 20px 20px 20px;
+  }
+
+  .lot-identification {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .lot-box {
+    text-align: center;
+  }
+
+  .status-badge {
+    text-align: center;
+  }
+
+  .boundaries-card {
+    padding: 16px;
+  }
+
+  .boundary-item {
+    gap: 12px;
+    padding: 10px 0;
+  }
+
+  .boundary-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .boundary-icon-svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .boundary-label,
+  .boundary-value {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-overlay {
+    padding-right: 5px;
+    background: transparent;
+  }
+
+  .modal {
+    width: 300px;
+    max-width: 95vw;
+    border-radius: 16px;
+  }
+
+  .back-btn {
+    top: 8px;
+    right: 8px;
+    padding: 5px 8px;
+    font-size: 12px;
+  }
+
+  .modal-header {
+    padding: 12px 16px;
+  }
+
+  .logo-image {
+    width: 60px;
+    height: 60px;
+    max-width: 100px;
+    max-height: 100px;
+  }
+
+  .modal-content {
+    padding: 0 16px 16px 16px;
+  }
+
+  .lot-text {
+    font-size: 14px;
+  }
+
+  .status-badge {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .detail-label,
+  .detail-value {
+    font-size: 14px;
+  }
+
+  .boundaries-title {
+    font-size: 16px;
+  }
+
+  .boundaries-card {
+    padding: 12px;
+  }
+
+  .whatsapp-btn {
+    padding: 14px;
+    font-size: 14px;
+  }
+
+  .whatsapp-btn i {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 360px) {
+  .modal-overlay {
+    padding-right: 2px;
+    background: transparent;
+  }
+
+  .modal {
+    width: 280px;
+    max-width: 98vw;
+    border-radius: 12px;
+  }
+
+  .back-btn {
+    top: 5px;
+    right: 5px;
+    padding: 4px 6px;
+    font-size: 11px;
+  }
+
+  .modal-header {
+    padding: 10px 12px;
+  }
+
+  .logo-image {
+    width: 50px;
+    height: 50px;
+    max-width: 80px;
+    max-height: 80px;
+  }
+
+  .modal-content {
+    padding: 0 12px 12px 12px;
+  }
+
+  .lot-text {
+    font-size: 12px;
+  }
+
+  .status-badge {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+
+  .detail-label,
+  .detail-value {
+    font-size: 12px;
+  }
+
+  .boundaries-title {
+    font-size: 14px;
+  }
+
+  .boundaries-card {
+    padding: 10px;
+  }
+
+  .boundary-item {
+    gap: 8px;
+    padding: 8px 0;
+  }
+
+  .boundary-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .boundary-icon-svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .boundary-label,
+  .boundary-value {
+    font-size: 12px;
+  }
+
+  .whatsapp-btn {
+    padding: 12px;
+    font-size: 12px;
+  }
+
+  .whatsapp-btn i {
+    font-size: 16px;
+  }
 }
 
 /* Modal de áreas comunes responsive */
@@ -1594,6 +2072,117 @@ body {
   }
 }
 
+/* Modal de ubicaciones responsive */
+@media (max-width: 1024px) {
+  .location-modal-overlay {
+    padding-right: 15px;
+  }
+
+  .location-modal {
+    width: 380px;
+    max-width: 90vw;
+  }
+}
+
+@media (max-width: 768px) {
+  .location-modal-overlay {
+    padding-right: 10px;
+  }
+
+  .location-modal {
+    width: 360px;
+    max-width: 90vw;
+  }
+
+  .location-modal-header {
+    padding: 20px 20px 12px 20px;
+  }
+
+  .location-modal-title {
+    font-size: 20px;
+  }
+
+  .location-modal-content {
+    padding: 20px;
+  }
+
+  .location-section-header {
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+
+  .location-card {
+    padding: 16px;
+  }
+
+  .location-card-image {
+    height: 100px;
+    margin-bottom: 12px;
+  }
+
+  .location-card-title {
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .location-card-button {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .location-modal-overlay {
+    padding-right: 5px;
+  }
+
+  .location-modal {
+    width: 320px;
+    max-width: 95vw;
+    border-radius: 20px;
+  }
+
+  .location-modal-header {
+    padding: 16px 16px 8px 16px;
+  }
+
+  .location-modal-title {
+    font-size: 18px;
+  }
+
+  .location-modal-content {
+    padding: 16px;
+  }
+
+  .location-section-header {
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .location-card {
+    padding: 12px;
+  }
+
+  .location-card-image {
+    height: 80px;
+    margin-bottom: 10px;
+  }
+
+  .location-card-title {
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+
+  .location-card-button {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .location-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ========================================
    OVERLAY Y NAVEGACIÓN INICIAL
    ======================================== */
@@ -1637,7 +2226,7 @@ body {
 }
 
 .close-btn {
-  background-color: #0E0E0E;
+  background-color: #0e0e0e;
   position: absolute;
   top: 20px;
   right: 25px;
@@ -1724,7 +2313,7 @@ body {
 
 /* Botón Entendido */
 .understood-btn {
-  background: #0E0E0E;
+  background: #0e0e0e;
   color: white;
   padding: 10px 20px;
   border-radius: 15px;
@@ -1738,29 +2327,31 @@ body {
 }
 
 .understood-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -2px;
   left: -2px;
   right: -2px;
   bottom: -2px;
-  background: linear-gradient(180deg,
+  background: linear-gradient(
+    180deg,
     rgba(0, 0, 0, 1) 0%,
     rgba(0, 0, 0, 0.8) 25%,
     rgba(128, 128, 128, 0.6) 50%,
     rgba(192, 192, 192, 0.4) 75%,
-    rgba(255, 255, 255, 1) 100%);
+    rgba(255, 255, 255, 1) 100%
+  );
   border-radius: 17px;
   z-index: -1;
 }
 
 .understood-btn:hover {
-  background: #0E0E0E;
+  background: #0e0e0e;
   box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15);
 }
 
 .understood-btn:hover::before {
-  opacity: 0.0;
+  opacity: 0;
 }
 
 /* ========================================
@@ -1798,7 +2389,7 @@ body {
 .menu-container {
   width: 100%;
   padding: 0;
-  background: #0E0E0E;
+  background: #0e0e0e;
   color: white;
   border-radius: 15px;
   font-size: 14px;
@@ -1811,19 +2402,21 @@ body {
 }
 
 .menu-container::before {
-  content: '';
+  content: "";
   border-radius: 15px;
   position: absolute;
   top: -1px;
   left: -1px;
   right: -1px;
   bottom: -1px;
-  background: linear-gradient(100deg,
+  background: linear-gradient(
+    100deg,
     rgba(255, 255, 255, 1) 0%,
     rgba(116, 116, 116, 0.8) 20%,
     rgba(0, 0, 0, 1) 50%,
     rgba(116, 116, 116, 0.8) 70%,
-    rgba(255, 255, 255, 1) 100%);
+    rgba(255, 255, 255, 1) 100%
+  );
   z-index: -1;
 }
 
@@ -1852,18 +2445,20 @@ body {
 }
 
 .menu-item::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
   height: 1px;
-  background: linear-gradient(to right,
+  background: linear-gradient(
+    to right,
     transparent 0%,
     rgba(255, 255, 255, 0.2) 15%,
     rgba(255, 255, 255, 0.8) 50%,
     rgba(255, 255, 255, 0.2) 85%,
-    transparent 100%);
+    transparent 100%
+  );
 }
 
 .menu-item:last-child {
@@ -1871,17 +2466,21 @@ body {
 }
 
 .menu-item:hover {
-  background: radial-gradient(circle at center left,
+  background: radial-gradient(
+    circle at center left,
     rgba(76, 175, 80, 0.4) 0%,
     rgba(46, 125, 50, 0.2) 40%,
-    transparent 60%);
+    transparent 60%
+  );
 }
 
 .menu-item.active {
-  background: radial-gradient(circle at center left,
+  background: radial-gradient(
+    circle at center left,
     rgba(76, 175, 80, 0.4) 0%,
     rgba(46, 125, 50, 0.2) 40%,
-    transparent 60%);
+    transparent 60%
+  );
 }
 
 .menu-item .icon {
@@ -1967,14 +2566,14 @@ body {
 }
 
 .icon-button:hover {
-  background-image: url('../img/fondo_boton_resaltado.svg');
+  background-image: url("../img/fondo_boton_resaltado.svg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
 }
 
 .icon-button.active {
-  background-image: url('../img/fondo_boton_resaltado.svg');
+  background-image: url("../img/fondo_boton_resaltado.svg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -2002,12 +2601,14 @@ body {
 .divider {
   width: 1px;
   height: 30px;
-  background: linear-gradient(to bottom,
+  background: linear-gradient(
+    to bottom,
     transparent 0%,
     rgba(255, 255, 255, 0.2) 15%,
     rgba(255, 255, 255, 0.8) 50%,
     rgba(255, 255, 255, 0.2) 85%,
-    transparent 100%);
+    transparent 100%
+  );
   margin: 0 8px;
 }
 
@@ -2084,46 +2685,45 @@ body {
   font-weight: 600;
   color: white;
   margin-bottom: 8px;
+  text-align: center;
 }
 
 .location-address {
+  text-align: center;
   color: white;
-    margin-bottom: 16px;
+  margin-bottom: 16px;
 }
 
 .time-estimate {
-    display: flex;
-    align-items: center;
-  gap: 8px;
-  color: white;
-  margin-bottom: 24px;
-}
-
-.info-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 12px;
-  padding: 4px 0;
-}
-
-.time-estimate {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: white;
-    font-size: 14px;
-}
-
-.link-button {
+  border: 1px solid #555;
   background: none;
-  border: 1px solid white;
   color: white;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   padding: 4px 12px;
-  border-radius: 16px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 12px;
+  padding: 4px 0;
+}
+
+.link-button {
+  border: 1px solid #555;
+  background-color: rgba(148, 143, 143, 0.5);
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 12px;
+  border-radius: 8px;
   transition: all 0.2s ease;
 }
 
@@ -2212,18 +2812,20 @@ body {
 }
 
 .lot-search-header::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
   height: 1px;
-  background: linear-gradient(to right,
+  background: linear-gradient(
+    to right,
     transparent 0%,
     rgba(255, 255, 255, 0.2) 15%,
     rgba(255, 255, 255, 0.8) 50%,
     rgba(255, 255, 255, 0.2) 85%,
-    transparent 100%);
+    transparent 100%
+  );
 }
 
 .lot-search-title {
@@ -2322,7 +2924,7 @@ body {
 }
 
 .filter-label {
-    font-weight: bold;
+  font-weight: bold;
   display: block;
   color: white;
   font-size: 14px;
@@ -2351,8 +2953,8 @@ body {
 }
 
 .range-slider-container {
-    margin: auto;
-    width: 90%;
+  margin: auto;
+  width: 90%;
   position: relative;
   margin-bottom: 3rem;
   overflow: visible;
@@ -2451,7 +3053,7 @@ body {
   border: 0;
 }
 
-.range-slider input[type=range]::-moz-focus-outer {
+.range-slider input[type="range"]::-moz-focus-outer {
   border: 0;
 }
 
@@ -2487,7 +3089,7 @@ body {
   left: 0;
   top: 10px;
   position: absolute;
-  background: #DDD;
+  background: #ddd;
 }
 
 .incl-range {
@@ -2644,7 +3246,7 @@ body {
 
 .lot-card {
   border: 1px solid #555;
-    background: rgb(14 14 14 / 50%);
+  background: rgb(14 14 14 / 50%);
   border-radius: 8px;
   padding: 16px;
   padding-bottom: 0;
@@ -2661,18 +3263,20 @@ body {
 
 .lot-card-separator {
   height: 1px;
-  background: linear-gradient(to right,
-  transparent 0%,
-  rgba(255, 255, 255, 0.2) 15%,
-  rgba(255, 255, 255, 0.8) 50%,
-  rgba(255, 255, 255, 0.2) 85%,
-  transparent 100%);
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 15%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0.2) 85%,
+    transparent 100%
+  );
   margin: 1rem 0;
 }
 
 .lot-card-status {
   display: block;
-  padding: .5rem 2rem;
+  padding: 0.5rem 2rem;
   background: rgba(29, 183, 121, 1);
   color: white;
   border-radius: 4px;
@@ -2752,6 +3356,265 @@ body {
 }
 
 /* ========================================
+   MODAL DE UBICACIONES
+   ======================================== */
+.location-modal-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: auto;
+  height: 100vh;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 20px;
+  z-index: 1000;
+}
+
+.location-modal {
+  backdrop-filter: blur(5px);
+  background: rgba(14, 14, 14, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 25px;
+  color: white;
+  width: 30rem;
+  min-width: 350px;
+  max-width: 90vw;
+  max-height: 90vh;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  animation: locationModalSlideIn 0.4s ease-out;
+  pointer-events: auto;
+  position: relative;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes locationModalSlideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.location-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 24px 16px 24px;
+  flex-shrink: 0;
+  width: 100%;
+  position: relative;
+}
+
+.location-modal-header::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 255, 255, 0) 15%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0) 85%,
+    transparent 100%
+  );
+}
+
+.location-modal-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
+  text-align: center;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.location-modal-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.location-modal-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.location-modal-close:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.location-modal-content {
+  padding: 2rem 3rem;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Estilizar scrollbar para location-modal-content */
+.location-modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.location-modal-content::-webkit-scrollbar-track {
+  background: #000000;
+  border-radius: 4px;
+}
+
+.location-modal-content::-webkit-scrollbar-thumb {
+  background: #333333;
+  border-radius: 4px;
+  border: 1px solid #000000;
+}
+
+.location-modal-content::-webkit-scrollbar-thumb:hover {
+  background: #444444;
+}
+
+/* Para Firefox */
+.location-modal-content {
+  scrollbar-width: thin;
+  scrollbar-color: #333333 #000000;
+}
+
+.location-section {
+  margin-bottom: 32px;
+}
+
+.location-section:last-child {
+  margin-bottom: 0;
+}
+
+.location-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.location-section-icon {
+  font-size: 22px;
+}
+
+.location-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.location-card {
+  border: 1px solid rgb(255, 255, 255);
+  background: rgb(0 0 0 / 70%);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.location-card-image {
+  width: 100%;
+  height: 15rem;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.location-card-image::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.6) 30%,
+    rgba(0, 0, 0, 0.2) 60%,
+    transparent 100%
+  );
+  z-index: 1;
+}
+
+.location-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.location-card-buttons {
+  margin: auto;
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 1rem;
+}
+
+.location-card-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.location-card-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.location-card-button i {
+  font-size: 12px;
+}
+
+/* ========================================
    ENTORNO BUTTONS CONTAINER
    ======================================== */
 .entorno-buttons-container {
@@ -2763,7 +3626,6 @@ body {
   gap: 15px;
   z-index: 1000;
 }
-
 
 .entorno-button:hover {
   background: rgba(255, 255, 255, 0.2);
@@ -2835,8 +3697,8 @@ body {
 
   .icon-button {
     width: 36px;
-        height: 36px;
-    }
+    height: 36px;
+  }
 
   .icon-button img {
     width: 18px;
@@ -3003,16 +3865,16 @@ body {
   }
 
   .instruction-subtitle {
-        font-size: 13px;
+    font-size: 13px;
     /* Buen tamaño legible */
-    }
-    
+  }
+
   .close-btn {
     top: 12px;
     right: 15px;
     font-size: 20px;
-        width: 36px;
-        height: 36px;
+    width: 36px;
+    height: 36px;
   }
 }
 
@@ -3113,7 +3975,7 @@ body {
 
   .status-button {
     padding: 8px 10px;
-        font-size: 12px;
+    font-size: 12px;
     gap: 6px;
     flex: 1;
   }
@@ -3310,5 +4172,5 @@ body {
 
   .divider {
     height: 28px;
-    }
+  }
 }

@@ -1044,15 +1044,25 @@ function showCommonAreasModal() {
 }
 // Función para mostrar el modal de ubicación
 function showLocationModal(title, description, coordinates, tipo = null) {
+  // Eliminar ruta anterior si existe
+  if (window.currentRoute) {
+    viewer.entities.remove(window.currentRoute);
+    window.currentRoute = null;
+    console.log('Ruta anterior eliminada');
+  }
+
   const modal = document.getElementById('locationModalOverlay');
   const titleEl = document.getElementById('locationModalTitle');
   const addressEl = document.getElementById('locationModalAddress');
   const timeEl = document.getElementById('locationModalTime');
+  const locationModalTimeEstimate = document.getElementById('locationModalTimeEstimate');
   const routeBtn = document.getElementById('calculateRouteBtn');
+  locationModalTimeEstimate.style.display = 'none';
+
 
   if (modal && titleEl && addressEl && timeEl && routeBtn) {
     titleEl.textContent = title;
-    addressEl.textContent = description;
+    addressEl.textContent = coordinates; // Mostrar coordenadas en lugar de descripción
     timeEl.textContent = ""; // No mostrar tiempo inicialmente
 
     // Clonar y reemplazar el botón para limpiar listeners anteriores
@@ -1067,7 +1077,8 @@ function showLocationModal(title, description, coordinates, tipo = null) {
       const result = await calculateRoute(startLonLat, coordinates, tipo);
       
       if (result && result.success) {
-        timeEl.textContent = `${result.duration} min (${Math.round(result.distance/1000)} km)`;
+  locationModalTimeEstimate.style.display = 'flex';
+        timeEl.textContent = `A ${result.duration} min (${Math.round(result.distance/1000)} km)`;
         console.log(`✅ Tiempo actualizado: ${result.duration} min`);
       } else {
         timeEl.textContent = "Error al calcular";
