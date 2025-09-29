@@ -5,6 +5,11 @@
     <meta charset="utf-8">
     <meta http-equiv="Permissions-Policy"
         content="accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), usb=(), xr-spatial-tracking=()">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mykonos Residencial Playa</title>
+    <meta name="description" content="Mykonos Residencial Playa">
+    <link rel="icon" href="img/init/init-icon.png">
 
     <script src="https://cesium.com/downloads/cesiumjs/releases/1.115/Build/Cesium/Cesium.js"></script>
     <link href="https://cesium.com/downloads/cesiumjs/releases/1.115/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
@@ -13,1275 +18,495 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Fredoka+One&family=Bebas+Neue:wght@400&family=Anton&display=swap"
         rel="stylesheet">
+    <script src="./js/index.js" type="module"></script>
 </head>
 
 <body>
+
     <!-- Splash Screen -->
-    <div class="splash-screen" id="splashScreen">
-        <!-- Tu logo SVG -->
-        <img src="img/Logo.svg" alt="Logo" class="logo">
+    <div class="splash-screen" id="splash-screen">
+        <img src="img/init/init-logo.svg" alt="Reveal Vision logo">
     </div>
-    <script>
-        // Función para ocultar el splash screen
-        function hideSplashScreen() {
-            const splashScreen = document.getElementById('splashScreen');
-            splashScreen.classList.add('fade-out');
-
-            // Remover completamente el elemento después de la animación
-            setTimeout(() => {
-                splashScreen.remove();
-            }, 800); // 800ms corresponde a la duración de la transición CSS
-        }
-
-        // Mostrar splash screen por 2 segundos
-        window.addEventListener('load', () => {
-            setTimeout(hideSplashScreen, 2000); // 2000ms = 2 segundos
-        });
-
-        // Alternativa: Si quieres que inicie inmediatamente sin esperar a que cargue todo
-        // setTimeout(hideSplashScreen, 2000);
-    </script>
-
-
 
     <!-- Overlay con instrucciones de navegación -->
-    <div class="overlay" id="navigationOverlay">
-        <div class="navigation-card">
-            <!-- Botón de cerrar -->
-            <button class="close-btn" id="closeBtn">
-                <i class="fas fa-times"></i>
-            </button>
+    <div class="instructions-overlay" id="instructions-overlay">
+        <div>
 
-            <!-- Título -->
-            <h2 class="title">Instrucciones de navegación</h2>
+            <h2>Instrucciones de navegación</h2>
 
             <!-- Instrucciones para Desktop -->
             <div class="instructions-container">
-                <div class="instruction">
-                    <img src="img/Clic.svg" alt="Clic sostenido" class="mouse-icon">
-                    <div class="instruction-title">Clic sostenido</div>
-                    <div class="instruction-subtitle">Desplazarse</div>
+                <div class="instruction background-container">
+                    <img src="img/instructions/PC/click.svg" alt="Clic sostenido" class="mouse-icon">
+                    <div class="instruction-text background-light-container">
+                        <div class="instruction-title">Clic sostenido</div>
+                        <div class="instruction-subtitle">Desplazarse</div>
+                    </div>
                 </div>
 
-                <div class="instruction">
-                    <img src="img/rueda.svg" alt="Deslizar rueda" class="mouse-icon">
-                    <div class="instruction-title">Deslizar rueda</div>
-                    <div class="instruction-subtitle">Ajustar zoom</div>
+                <div class="instruction background-container">
+                    <img src="img/instructions/PC/wheel.svg" alt="Deslizar rueda" class="mouse-icon">
+                    <div class="instruction-text background-light-container">
+                        <div class="instruction-title">Deslizar rueda</div>
+                        <div class="instruction-subtitle">Ajustar zoom</div>
+                    </div>
                 </div>
 
-                <div class="instruction">
-                    <img src="img/scroll.svg" alt="Rueda sostenida" class="mouse-icon">
-                    <div class="instruction-title">Rueda sostenida</div>
-                    <div class="instruction-subtitle">Cambiar perspectiva</div>
+                <div class="instruction background-container">
+                    <img src="img/instructions/PC/scroll.svg" alt="Rueda sostenida" class="mouse-icon">
+                    <div class="instruction-text background-light-container">
+                        <div class="instruction-title">Rueda sostenida</div>
+                        <div class="instruction-subtitle">Cambiar perspectiva</div>
+                    </div>
                 </div>
             </div>
 
             <!-- Instrucciones para Mobile -->
             <div class="instructions-container-mobile">
-                <div class="instruction-mobile">
-                    <img src="img/Clic_hands.svg" alt="Tocar y arrastrar" class="hand-icon">
-                    <div class="instruction-title">Tocar y arrastrar</div>
-                    <div class="instruction-subtitle">Desplazarse</div>
+                <div class="instruction-mobile background-container">
+                    <img src="img/instructions/movil/pinch-zoom.png" alt="Tocar y arrastrar" class="hand-icon">
+                    <div class="instruction-text background-light-container">
+                        <div class="instruction-title">Pellizca con dos dedos </div>
+                        <div class="instruction-subtitle">Ajustar zoom</div>
+                    </div>
                 </div>
 
-                <div class="instruction-mobile">
-                    <img src="img/rueda_hans.svg" alt="Pellizcar" class="hand-icon">
-                    <div class="instruction-title">Pellizcar</div>
-                    <div class="instruction-subtitle">Ajustar zoom</div>
+                <div class="instruction-mobile background-container">
+                    <img src="img/instructions/movil/rotate-fingers.png" alt="Pellizcar" class="hand-icon">
+                    <div class="instruction-text background-light-container">
+                        <div class="instruction-title">Girar con dos dedos</div>
+                        <div class="instruction-subtitle">Rotación</div>
+                    </div>
                 </div>
 
-                <div class="instruction-mobile">
-                    <img src="img/arrastar_dedo.svg" alt="Arrastrar con dos dedos" class="hand-icon">
-                    <div class="instruction-title">Dos dedos</div>
-                    <div class="instruction-subtitle">Cambiar perspectiva</div>
+                <div class="instruction-mobile background-container">
+                    <img src="img/instructions/movil/drag-finger.png" alt="Arrastrar con dos dedos" class="hand-icon">
+                    <div class="instruction-text background-light-container">
+                        <div class="instruction-title">Arrastrar el dedo</div>
+                        <div class="instruction-subtitle">Desplazarse</div>
+                    </div>
                 </div>
 
-                <div class="instruction-mobile">
-                    <img src="img/tocar_lote.svg" alt="Tocar elemento" class="hand-icon">
-                    <div class="instruction-title">Tocar</div>
-                    <div class="instruction-subtitle">Seleccionar</div>
+                <div class="instruction-mobile background-container">
+                    <img src="img/instructions/movil/tap-finger.png" alt="Tocar elemento" class="hand-icon">
+                    <div class="instruction-text background-light-container">
+                        <div class="instruction-title">Hacer tap</div>
+                        <div class="instruction-subtitle">Ver más detalles</div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Botón Entendido -->
-            <button class="understood-btn" id="understoodBtn">Entendido</button>
+            <button class="understood-btn background-btn" id="instructions-close-button">Entendido</button>
         </div>
     </div>
 
-    <script>
-        // Referencias a los elementos
-        const overlay = document.getElementById('navigationOverlay');
-        const closeBtn = document.getElementById('closeBtn');
-        const understoodBtn = document.getElementById('understoodBtn');
-
-        // Función para cerrar el overlay
-        function closeOverlay() {
-            overlay.classList.add('fade-out');
-
-            // Remover completamente después de la animación
-            setTimeout(() => {
-                overlay.remove();
-            }, 500); // 500ms corresponde a la duración de la transición
-        }
-
-        // Event listeners
-        closeBtn.addEventListener('click', closeOverlay);
-        understoodBtn.addEventListener('click', closeOverlay);
-
-        // Cerrar también si se hace clic fuera de la card (opcional)
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) {
-                closeOverlay();
-            }
-        });
-
-        // Cerrar con la tecla Escape (opcional)
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeOverlay();
-            }
-        });
-    </script>
-
-
-
-    <nav class="sidebar-menu">
-        <div class="logo-container">
+    <!-- Sidebar -->
+    <nav class="sidebar background-container border-container">
+        <div class="sidebar-logo">
             <img src="img/logo_mikonos.png" alt="Mykonos Residencial Playa">
         </div>
 
-        <div class="menu-container">
-            <div class="menu-items">
-                <a id="fotos" class="menu-item">
-                    <img src="img/icon_fotos.svg" alt="Fotos 360°" class="icon">
-                    <span class="text">Fotos 360°</span>
+        <div class="sidebar-container">
+            <div class="sidebar-items">
+                <a id="fotos" class="sidebar-item">
+                    <img src="img/sidebar/icon_fotos.svg" alt="Fotos 360°">
+                    <span>Fotos 360°</span>
                 </a>
 
-                <a id="areas" class="menu-item">
-                    <img src="img/icon_areas.svg" alt="Áreas comunes" class="icon">
-                    <span class="text">Áreas comunes</span>
+                <a id="areas" class="sidebar-item">
+                    <img src="img/sidebar/icon_areas.svg" alt="Áreas comunes">
+                    <span>Áreas comunes</span>
                 </a>
 
-                <a id="lotes" class="menu-item">
-                    <img src="img/icon_lotes.svg" alt="Lotes" class="icon">
-                    <span class="text">Lotes</span>
+                <a id="lotes" class="sidebar-item">
+                    <img src="img/sidebar/icon_lotes.svg" alt="Lotes">
+                    <span>Lotes</span>
                 </a>
 
-                <a id="entorno" class="menu-item">
-                    <img src="img/icon_entorno.svg" alt="Entorno" class="icon">
-                    <span class="text">Entorno</span>
+                <a id="entorno" class="sidebar-item">
+                    <img src="img/sidebar/icon_entorno.svg" alt="Entorno">
+                    <span>Entorno</span>
+                </a>
+
+                <a id="video" class="sidebar-item">
+                    <img src="img/sidebar/icon_video.svg" alt="Video">
+                    <span>Video</span>
                 </a>
             </div>
         </div>
     </nav>
 
-    <!-- Modal para recorrido 360° -->
-    <div class="modal-360-overlay" id="modal360">
-        <div class="modal-360-content">
-            <button class="modal-360-close" onclick="close360Modal()">×</button>
-            <div class="modal-360-viewer">
-                <div class="loading-spinner"></div>
-                <div class="viewer-360-container" id="viewer360">
-                    <img class="panorama-image" id="panoramaImg" src="img/360.jpg" alt="Vista panorámica 360°"
-                        onload="hideLoading()" onerror="handleImageError()">
-                </div>
-                <div class="viewer-controls">
-                    <button class="control-button" onclick="resetView()">⌂ Centrar</button>
-                    <button class="control-button" onclick="toggleAutoRotate()">🔄 Auto</button>
-                    <button class="control-button" onclick="zoomIn()">➕ Zoom</button>
-                    <button class="control-button" onclick="zoomOut()">➖ Zoom</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let isDragging = false;
-        let startX = 0;
-        let currentX = 0;
-        let rotation = 0;
-        let autoRotate = false;
-        let autoRotateInterval;
-        let zoomLevel = 1;
-
-        const viewer = document.getElementById('viewer360');
-        const panoramaImg = document.getElementById('panoramaImg');
-
-        function open360Modal() {
-            document.getElementById('modal360').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function close360Modal() {
-            document.getElementById('modal360').classList.remove('active');
-            document.body.style.overflow = 'auto';
-            stopAutoRotate();
-        }
-
-        function hideLoading() {
-            const spinner = document.querySelector('.loading-spinner');
-            if (spinner) {
-                spinner.style.display = 'none';
-            }
-            setupPanoramaControls();
-        }
-
-        function handleImageError() {
-            const spinner = document.querySelector('.loading-spinner');
-            const viewer = document.getElementById('viewer360');
-
-            if (spinner) {
-                spinner.style.display = 'none';
-            }
-
-            // Mostrar mensaje de error
-            const errorMsg = document.createElement('div');
-            errorMsg.style.cssText = `
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                color: #666;
-                text-align: center;
-                font-size: 16px;
-                padding: 20px;
-                background: rgba(255,255,255,0.9);
-                border-radius: 10px;
-                max-width: 300px;
-            `;
-            errorMsg.innerHTML = `
-                <div style="font-size: 48px; margin-bottom: 15px;">📷</div>
-                <div style="font-weight: bold; margin-bottom: 10px;">Imagen no encontrada</div>
-                <div style="font-size: 14px; color: #999;">
-                    Asegúrate de que la imagen esté en:<br>
-                    <code style="background: #f0f0f0; padding: 2px 4px; border-radius: 3px;">img/360.jpg</code>
-                </div>
-            `;
-            viewer.appendChild(errorMsg);
-        }
-
-        function setupPanoramaControls() {
-            viewer.addEventListener('mousedown', startDrag);
-            viewer.addEventListener('mousemove', drag);
-            viewer.addEventListener('mouseup', endDrag);
-            viewer.addEventListener('mouseleave', endDrag);
-
-            // Touch events para móviles
-            viewer.addEventListener('touchstart', startDrag);
-            viewer.addEventListener('touchmove', drag);
-            viewer.addEventListener('touchend', endDrag);
-        }
-
-        function startDrag(e) {
-            isDragging = true;
-            startX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-            currentX = startX;
-            stopAutoRotate();
-        }
-
-        function drag(e) {
-            if (!isDragging) return;
-
-            e.preventDefault();
-            const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-            const deltaX = clientX - currentX;
-            currentX = clientX;
-
-            rotation += deltaX * 0.5;
-            updatePanoramaPosition();
-        }
-
-        function endDrag() {
-            isDragging = false;
-        }
-
-        function updatePanoramaPosition() {
-            panoramaImg.style.transform = `translateX(${rotation}px) scale(${zoomLevel})`;
-        }
-
-        function resetView() {
-            rotation = 0;
-            zoomLevel = 1;
-            updatePanoramaPosition();
-            stopAutoRotate();
-        }
-
-        function toggleAutoRotate() {
-            if (autoRotate) {
-                stopAutoRotate();
-            } else {
-                startAutoRotate();
-            }
-        }
-
-        function startAutoRotate() {
-            autoRotate = true;
-            autoRotateInterval = setInterval(() => {
-                rotation -= 1;
-                updatePanoramaPosition();
-            }, 50);
-        }
-
-        function stopAutoRotate() {
-            autoRotate = false;
-            if (autoRotateInterval) {
-                clearInterval(autoRotateInterval);
-            }
-        }
-
-        function zoomIn() {
-            if (zoomLevel < 2) {
-                zoomLevel += 0.1;
-                updatePanoramaPosition();
-            }
-        }
-
-        function zoomOut() {
-            if (zoomLevel > 0.5) {
-                zoomLevel -= 0.1;
-                updatePanoramaPosition();
-            }
-        }
-
-        // Cerrar modal con Escape
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') {
-                close360Modal();
-            }
-        });
-
-        // Cerrar modal al hacer clic fuera del contenido
-        document.getElementById('modal360').addEventListener('click', function (e) {
-            if (e.target === this) {
-                close360Modal();
-            }
-        });
-    </script>
-    <div id="cesiumContainer"></div>
-    <script src="./js/index.js" type="module"></script>
-    </div>
-
-    <!-- Botones del entorno -->
-    <div class="entorno-buttons-container" id="entornoButtonsContainer" style="display: none;">
-        <div class="entorno-button active">
-            <img src="img/icon_entorno.svg" alt="Todos" class="entorno-button-icon">
-            <span class="entorno-button-text">Todos</span>
-        </div>
-        <div class="entorno-button">
-            <img src="img/playas.svg" alt="Playas" class="entorno-button-icon">
-            <span class="entorno-button-text">Playas</span>
-        </div>
-        <div class="entorno-button">
-            <img src="img/restaurantes.svg" alt="Restaurantes" class="entorno-button-icon">
-            <span class="entorno-button-text">Restaurantes</span>
-        </div>
-        <div class="entorno-button">
-            <img src="img/hoteles.svg" alt="Hoteles" class="entorno-button-icon">
-            <span class="entorno-button-text">Hoteles</span>
-        </div>
-        <div class="entorno-button">
-            <img src="img/turismo.svg" alt="Turismo" class="entorno-button-icon">
-            <span class="entorno-button-text">Turismo</span>
-        </div>
-        <div class="entorno-button">
-            <img src="img/seguridad.svg" alt="Seguridad" class="entorno-button-icon">
-            <span class="entorno-button-text">Seguridad</span>
-        </div>
-    </div>
-
-    <div class="main-modal-overlay" id="modalOverlay">
-        <div class="main-modal">
-            <a class="main-back-link" href="#" onclick="closeModal(); return false;">
-                <i class="fas fa-arrow-left"></i>
-                <span>Volver</span>
-            </a>
-            <div class="main-modal-header">
-                <div class="main-modal-logo">
-                    <img src="img/logo_mikonos.png" alt="Mykonos Residencial Playa" class="main-modal-logo-image">
-                </div>
-            </div>
-
-            <div class="main-modal-content">
-                <div class="main-lot-identification">
-                    <div class="main-lot-box">
-                        <span class="main-lot-text" id="modalLot">Mz. C - Lt. 7</span>
-                    </div>
-                    <div class="main-status-badge" id="modalStatus">Disponible</div>
-                </div>
-
-                <div class="main-property-details">
-                    <div class="main-detail-row">
-                        <span class="main-detail-label">Precio</span>
-                        <span class="main-detail-value" id="modalPrice">$ 28,000</span>
-                    </div>
-                    <div class="main-detail-row">
-                        <span class="main-detail-label">Área</span>
-                        <span class="main-detail-value" id="modalArea">115,00 m²</span>
-                    </div>
-                </div>
-
-                <div class="main-boundaries-section">
-                    <h3 class="main-boundaries-title">Colindancias</h3>
-                    <div class="main-boundaries-card">
-                        <div class="main-boundary-item">
-                            <div class="main-boundary-icon">
-                                <img src="img/izquierda.svg" alt="Izquierda" class="main-boundary-icon-svg">
-                            </div>
-                            <span class="main-boundary-label">Izquierda</span>
-                            <span class="main-boundary-value" id="modalLeft">12.00ML</span>
-                        </div>
-                        <div class="main-boundary-item">
-                            <div class="main-boundary-icon">
-                                <img src="img/derecha.svg" alt="Derecha" class="main-boundary-icon-svg">
-                            </div>
-                            <span class="main-boundary-label">Derecha</span>
-                            <span class="main-boundary-value" id="modalRight">12.00ML</span>
-                        </div>
-                        <div class="main-boundary-item">
-                            <div class="main-boundary-icon">
-                                <img src="img/frente.svg" alt="Frente" class="main-boundary-icon-svg">
-                            </div>
-                            <span class="main-boundary-label">Frente</span>
-                            <span class="main-boundary-value" id="modalFront">12.00ML</span>
-                        </div>
-                        <div class="main-boundary-item">
-                            <div class="main-boundary-icon">
-                                <img src="img/fondo.svg" alt="Fondo" class="main-boundary-icon-svg">
-                            </div>
-                            <span class="main-boundary-label">Fondo</span>
-                            <span class="main-boundary-value" id="modalBack">12.00ML</span>
-                        </div>
-                    </div>
-                </div>
-
-                <button class="main-whatsapp-btn">
-                    <i class="fa-brands fa-whatsapp"></i>
-                    <span>Cotiza tu lote</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-
-
-
-
-    <div class="bottom-menu-container">
+    <!-- Bottombar -->
+    <div class="bottombar">
         <!-- Barra de iconos -->
-        <div class="icon-toolbar">
-            <button id="home" class="icon-button">
-                <img src="img/home.svg" alt="Home">
+        <div class="bottombar-icon-toolbar background-container border-container">
+            <button id="home" class="bottombar-icon-button">
+                <img src="img/bottombar/home.svg" alt="Home">
             </button>
 
-            <div class="divider"></div>
+            <div class="bottombar-divider"></div>
 
-            <button id="up" class="icon-button">
-                <img src="img/up.svg" alt="Up">
+            <button id="up" class="bottombar-icon-button">
+                <img src="img/bottombar/up.svg" alt="Up">
             </button>
 
-            <div class="divider"></div>
+            <div class="bottombar-divider"></div>
 
-            <button id="down" class="icon-button">
-                <img src="img/down.svg" alt="Down">
+            <button id="down" class="bottombar-icon-button">
+                <img src="img/bottombar/down.svg" alt="Down">
             </button>
 
-            <div class="divider"></div>
+            <div class="bottombar-divider"></div>
 
-            <button id="zoomIn" class="icon-button">
-                <img src="img/zoom+.svg" alt="Zoom In">
+            <button id="zoomIn" class="bottombar-icon-button">
+                <img src="img/bottombar/zoom+.svg" alt="Zoom In">
             </button>
 
-            <div class="divider"></div>
+            <div class="bottombar-divider"></div>
 
-            <button id="zoomOut" class="icon-button">
-                <img src="img/zoom-.svg" alt="Zoom Out">
+            <button id="zoomOut" class="bottombar-icon-button">
+                <img src="img/bottombar/zoom-.svg" alt="Zoom Out">
             </button>
 
-            <div class="divider"></div>
+            <div class="bottombar-divider"></div>
 
-            <button id="view3d" class="icon-button">
-                <img src="img/3D.svg" alt="3D">
+            <button id="view3d" class="bottombar-icon-button">
+                <img src="img/bottombar/3D.svg" alt="3D">
             </button>
 
-            <div class="divider"></div>
+            <div class="bottombar-divider"></div>
 
-            <button id="grid" class="icon-button">
-                <img src="img/plot.svg" alt="Plot">
+            <button id="grid" class="bottombar-icon-button">
+                <img src="img/bottombar/plot.svg" alt="Plot">
             </button>
         </div>
 
         <!-- Botones de estado -->
-        <div class="status-buttons">
-            <button class="status-button disponible">
-                <span class="status-indicator"></span>
+        <div class="bottombar-status-buttons">
+            <button class="bottombar-status-button disponible">
+                <span class="bottombar-status-indicator"></span>
                 Disponible
             </button>
 
-            <button class="status-button reservado">
-                <span class="status-indicator"></span>
+            <button class="bottombar-status-button reservado">
+                <span class="bottombar-status-indicator"></span>
                 Reservado
             </button>
 
-            <button class="status-button vendido">
-                <span class="status-indicator"></span>
+            <button class="bottombar-status-button vendido">
+                <span class="bottombar-status-indicator"></span>
                 Vendido
             </button>
         </div>
     </div>
 
-    <!-- Modal para Ubicaciones -->
-    <div class="location-modal-overlay" id="locationModalOverlay" style="display: none;">
-        <div class="location-modal">
-            <div class="location-modal-header">
-                <div class="location-modal-title">
-                    <img src="img/playas.svg" id="locationModalIcon" alt="Playas" class="location-modal-icon">
-                    <span id="locationModalTitle">Playas</span>
+    <!-- Cesium -->
+    <div id="cesium-container"></div>
+
+
+    <!-- Modal Lote Contenido -->
+    <div class="lot-modal background-container border-container" id="modalOverlay" style="display: none;">
+        <a class="lot-modal-back-link" href="#" onclick="closeModal()">
+            <i class="fas fa-arrow-left"></i>
+            <span>Volver</span>
+        </a>
+        <div class="lot-modal-header">
+            <div class="lot-modal-logo">
+                <img src="img/logo_mikonos.png" alt="Mykonos Residencial Playa">
+            </div>
+        </div>
+
+        <div class="lot-modal-content">
+            <div class="lot-identification">
+                <div class="lot-box">
+                    <span id="modalLot">Mz. C - Lt. 7</span>
+                </div>
+                <div class="lot-status-badge" id="modalStatus">Disponible</div>
+            </div>
+
+            <div class="lot-property-details">
+                <div class="lot-detail-row">
+                    <span class="lot-detail-label">Precio</span>
+                    <span class="lot-detail-value" id="modalPrice">$ 28,000</span>
+                </div>
+                <div class="lot-detail-row">
+                    <span class="lot-detail-label">Área</span>
+                    <span class="main-detail-value" id="modalArea">115,00 m²</span>
                 </div>
             </div>
-            <div class="location-modal-content">
-                <div class="location-section">
-                    <div class="modal-content">
-                        <div class="location-card-image" id="locationModalImage" style="background-image: url('img/club_house.jpg');">
+
+            <div class="lot-boundaries-section">
+                <h3 class="lot-boundaries-title">Colindancias</h3>
+                <div class="lot-boundaries-card">
+                    <div class="lot-boundary-item">
+                        <div class="lot-boundary-icon">
+                            <img src="img/lote/izquierda.svg" alt="Izquierda" class="lot-boundary-icon-svg">
                         </div>
-                        <div class="location-card-title" id="locationModalTitle">Club House</div>
-                        <div class="location-details">
-                            <h2 class="location-subtitle">Ubicación:</h2>
-                            <p class="location-address" id="locationModalAddress">-17.102105, -71.9072266</p>
-                            <div class="info-row">
-                                <div class="time-estimate" id="locationModalTimeEstimate" style="display: none;">
-                                    <span id="locationModalTime">5 mins</span>
-                                </div>
-                                <button class="link-button" id="calculateRouteBtn">
-                                    Cómo llegar &#8599
-                                </button>
-                            </div>
+                        <span class="lot-boundary-label">Izquierda</span>
+                        <span class="lot-boundary-value" id="modalLeft">12.00ML</span>
+                    </div>
+                    <div class="lot-boundary-item">
+                        <div class="lot-boundary-icon">
+                            <img src="img/lote/derecha.svg" alt="Derecha" class="lot-boundary-icon-svg">
                         </div>
+                        <span class="lot-boundary-label">Derecha</span>
+                        <span class="lot-boundary-value" id="modalRight">12.00ML</span>
+                    </div>
+                    <div class="lot-boundary-item">
+                        <div class="lot-boundary-icon">
+                            <img src="img/lote/frente.svg" alt="Frente" class="lot-boundary-icon-svg">
+                        </div>
+                        <span class="lot-boundary-label">Frente</span>
+                        <span class="lot-boundary-value" id="modalFront">12.00ML</span>
+                    </div>
+                    <div class="lot-boundary-item">
+                        <div class="lot-boundary-icon">
+                            <img src="img/lote/fondo.svg" alt="Fondo" class="lot-boundary-icon-svg">
+                        </div>
+                        <span class="lot-boundary-label">Fondo</span>
+                        <span class="lot-boundary-value" id="modalBack">12.00ML</span>
                     </div>
                 </div>
             </div>
+
+            <button class="lot-whatsapp-btn">
+                <i class="fa-brands fa-whatsapp"></i>
+                <span>Cotiza tu lote</span>
+            </button>
         </div>
     </div>
 
-    <!-- Modal para Áreas comunes -->
-    <div class="common-areas-modal-overlay" id="commonAreasModalOverlay" style="display: none;">
-        <div class="common-areas-modal">
-            <div class="common-areas-modal-header">
-                <div class="common-areas-modal-title">
-                    <img src="img/comunidad.svg" alt="Comunidad" class="common-areas-modal-icon">
-                    <span>Comunidad</span>
-                </div>
-            </div>
-            <div class="common-areas-modal-content">
-
-                <!-- Comunidad Section -->
-                <div class="common-areas-section">
-                    <div class="common-areas-grid" id="commonAreasGrid">
-                        <!-- Las tarjetas se generarán dinámicamente aquí -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal para Fotos 360° -->
-    <div class="fotos360-modal-overlay" id="fotos360ModalOverlay" style="display: none;">
-        <div class="fotos360-modal">
-            <button class="fotos360-modal-close" onclick="closeFotos360Modal()">
+    <!-- Overlay para Fotos 360° -->
+    <div class="overlay-360-background" id="overlay360" style="display: none;">
+        <div class="overlay-360">
+            <button class="close-btn" id="overlay-360-close-btn">
                 <i class="fas fa-times"></i>
             </button>
-            <div class="fotos360-modal-content">
-                <iframe id="fotos360Iframe" src="" frameborder="0" allowfullscreen
+            <div class="overlay-360-content">
+                <iframe id="overlay360Iframe" src="" frameborder="0" allowfullscreen
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; xr-spatial-tracking"
                     sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
             </div>
         </div>
     </div>
 
-    <!-- Modal para Imágenes de Áreas Comunes -->
-    <div class="areas-comunes-images-modal-overlay" id="areasComunesImagesModalOverlay" style="display: none;">
-        <div class="areas-comunes-images-modal">
-            <button class="areas-comunes-images-modal-close" onclick="closeAreasComunesImagesModal()">
+    <!-- Modal para Áreas comunes -->
+    <div class="common-areas-modal background-container border-container" id="commonAreasModalOverlay"
+        style="display: none;">
+        <button class="close-btn" onclick="reiniciarMenu()">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="common-areas-modal-header">
+            <div class="common-areas-modal-title">
+                <img src="img/sidebar/areas/comunidad.svg" alt="Comunidad" class="common-areas-modal-icon">
+                <span>Comunidad</span>
+            </div>
+        </div>
+        <div class="common-areas-modal-content">
+            <div class="common-areas-section">
+                <div class="common-areas-grid" id="commonAreasGrid">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay para Imágenes de Áreas Comunes -->
+    <div class="common-areas-overlay" id="areasComunesImagesModalOverlay" style="display: none;">
+        <div class="common-areas-container-image">
+            <button class="close-btn" id="areasComunesImagesCloseBtn">
                 <i class="fas fa-times"></i>
             </button>
-            <div class="areas-comunes-images-modal-content">
+            <div class="common-areas-image">
                 <img id="areasComunesImage" src="" alt="Imagen del área común" />
             </div>
         </div>
     </div>
 
     <!-- Modal para Búsqueda de Lotes -->
-    <div class="modal-overlay" id="lotSearchModalOverlay" style="display: none;">
-        <div class="lot-search-modal">
-            <div class="lot-search-header">
-                <div class="lot-search-title">
-                    <img src="img/busqueda_lotes.svg" alt="Búsqueda de lotes" class="lot-search-icon">
-                    <span>Búsqueda de lotes</span>
+    <div class="lot-search-modal background-container border-container" id="lotSearchModalOverlay"
+        style="display: none;">
+        <button class="close-btn" onclick="reiniciarMenu()">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="lot-search-header">
+            <div class="lot-search-title">
+                <img src="img/sidebar/lotes/busqueda_lotes.svg" alt="Búsqueda de lotes" class="lot-search-icon">
+                <span>Búsqueda de lotes</span>
+            </div>
+        </div>
+
+        <div class="lot-search-content">
+            <div class="filters-container">
+                <div class="filter-section">
+                    <label class="filter-label">Precio</label>
+                    <div class="range-slider-container">
+                        <div class="range-slider price-range-slider">
+                            <span class="output outputOne price-output-min"></span>
+                            <span class="output outputTwo price-output-max"></span>
+                            <span class="full-range"></span>
+                            <span class="incl-range"></span>
+                            <input name="priceMin" value="0" min="0" max="60000" step="1000" type="range">
+                            <input name="priceMax" value="60000" min="0" max="60000" step="1000" type="range">
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-section">
+                    <label class="filter-label">Área</label>
+                    <div class="range-slider-container">
+                        <div class="range-slider area-range-slider">
+                            <span class="output outputOne area-output-min"></span>
+                            <span class="output outputTwo area-output-max"></span>
+                            <span class="full-range"></span>
+                            <span class="incl-range"></span>
+                            <input name="areaMin" value="90" min="90" max="500" step="1" type="range">
+                            <input name="areaMax" value="500" min="90" max="500" step="1" type="range">
+                        </div>
+                    </div>
+                </div>
+                <div class="clear-filters-container">
+                    <button class="clear-filters" id="clearFiltersBtn">Limpiar filtros</button>
                 </div>
             </div>
 
-            <div class="lot-search-content">
-                <!-- Filtros principales: Precio y Área -->
-                <div class="filters-container">
-                    <div class="filter-section">
-                        <label class="filter-label">Precio</label>
-                        <div class="range-slider-container">
-                            <div class="range-slider price-range-slider">
-                                <span class="output outputOne price-output-min"></span>
-                                <span class="output outputTwo price-output-max"></span>
-                                <span class="full-range"></span>
-                                <span class="incl-range"></span>
-                                <input name="priceMin" value="0" min="0" max="60000" step="1000" type="range">
-                                <input name="priceMax" value="60000" min="0" max="60000" step="1000" type="range">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="filter-section">
-                        <label class="filter-label">Área</label>
-                        <div class="range-slider-container">
-                            <div class="range-slider area-range-slider">
-                                <span class="output outputOne area-output-min"></span>
-                                <span class="output outputTwo area-output-max"></span>
-                                <span class="full-range"></span>
-                                <span class="incl-range"></span>
-                                <input name="areaMin" value="90" min="90" max="500" step="1" type="range">
-                                <input name="areaMax" value="500" min="90" max="500" step="1" type="range">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="clear-filters-container">
-                        <button class="clear-filters" onclick="clearFilters()">Limpiar filtros</button>
+            <div class="filters-secondary">
+                <div class="filter-section">
+                    <label class="filter-label">Ordenar por</label>
+                    <div class="dropdown-container">
+                        <select id="sortSelect" class="sort-dropdown">
+                            <option value="area-asc">Área: de menor a mayor</option>
+                            <option value="area-desc">Área: de mayor a menor</option>
+                            <option value="price-asc">Precio: de menor a mayor</option>
+                            <option value="price-desc">Precio: de mayor a menor</option>
+                            <option value="number-asc">Número: de menor a mayor</option>
+                            <option value="number-desc">Número: de mayor a menor</option>
+                        </select>
                     </div>
                 </div>
-
-                <!-- Filtros secundarios: Ordenar por y Estado -->
-                <div class="filters-secondary">
-                    <div class="filter-section">
-                        <label class="filter-label">Ordenar por</label>
-                        <div class="dropdown-container">
-                            <select id="sortSelect" class="sort-dropdown">
-                                <option value="area-asc">Área: de menor a mayor</option>
-                                <option value="area-desc">Área: de mayor a menor</option>
-                                <option value="price-asc">Precio: de menor a mayor</option>
-                                <option value="price-desc">Precio: de mayor a menor</option>
-                                <option value="number-asc">Número: de menor a mayor</option>
-                                <option value="number-desc">Número: de mayor a menor</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="filter-section">
-                        <label class="filter-label">Estado</label>
-                        <div class="status-buttons">
-                            <button class="status-btn" data-status="vendido">Vendido</button>
-                            <button class="status-btn" data-status="reservado">Reservado</button>
-                            <button class="status-btn active" data-status="disponible">Disponible</button>
-                        </div>
+                <div class="filter-section">
+                    <label class="filter-label">Estado</label>
+                    <div class="status-buttons">
+                        <button class="status-btn" data-status="vendido">Vendido</button>
+                        <button class="status-btn" data-status="reservado">Reservado</button>
+                        <button class="status-btn active" data-status="disponible">Disponible</button>
                     </div>
                 </div>
+            </div>
 
-                <!-- Resultados -->
-                <div class="results-section">
-                    <div class="results-count" id="resultsCount">Mostrando (0) lotes</div>
-                    <div class="lot-cards-container" id="lotCardsContainer">
-                        <!-- Los lotes se cargarán dinámicamente aquí -->
+            <div class="results-section">
+                <div class="results-count" id="resultsCount">Mostrando (0) lotes</div>
+                <div class="lot-cards-container" id="lotCardsContainer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botones del entorno -->
+    <div class="around-buttons-container" id="aroundButtonsContainer" style="display: none;">
+        <div class="around-button active">
+            <img src="img/sidebar/icon_entorno.svg" alt="Todos">
+            <span>Todos</span>
+        </div>
+        <div class="around-button">
+            <img src="img/sidebar/entorno/iconos/playas.svg" alt="Playas">
+            <span>Playas</span>
+        </div>
+        <div class="around-button">
+            <img src="img/sidebar/entorno/iconos/restaurantes.svg" alt="Restaurantes">
+            <span>Restaurantes</span>
+        </div>
+        <div class="around-button">
+            <img src="img/sidebar/entorno/iconos/hoteles.svg" alt="Hoteles">
+            <span>Hoteles</span>
+        </div>
+        <div class="around-button">
+            <img src="img/sidebar/entorno/iconos/turismo.svg" alt="Turismo">
+            <span>Turismo</span>
+        </div>
+        <div class="around-button">
+            <img src="img/sidebar/entorno/iconos/seguridad.svg" alt="Seguridad">
+            <span>Seguridad</span>
+        </div>
+    </div>
+
+    <!-- Modal Entorno -->
+    <div class="around-modal background-container border-container" id="aroundModalOverlay" style="display: none;">
+        <button class="close-btn" id="closeAroundModal">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="around-modal-header">
+            <div class="around-modal-title">
+                <img src="img/sidebar/entorno/iconos/playas.svg" id="locationModalIcon" alt="Playas"
+                    class="around-modal-icon">
+                <span id="aroundModalTitle">Playas</span>
+            </div>
+        </div>
+        <div class="around-modal-content">
+            <div class="around-section">
+                <div class="around-card-image" id="aroundModalImage"
+                    style="background-image: url('img/club_house.jpg');">
+                </div>
+                <div class="around-card-title" id="aroundCardTitle">Club House</div>
+                <div class="around-card-details">
+                    <h2>Ubicación:</h2>
+                    <p id="aroundModalAddress">-17.102105, -71.9072266</p>
+                    <div class="around-card-info-row">
+                        <div class="around-card-time-estimate" id="aroundModalTimeEstimate" style="display: none;">
+                            <span id="aroundModalTime">5 mins</span>
+                        </div>
+                        <button class="around-card-link-button" id="calculateRouteBtn">
+                            Cómo llegar &#8599
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Overlay para Video -->
+    <div class="video-overlay-background" id="videoModalOverlay" style="display: none;">
+        <div class="video-overlay">
+            <button class="close-btn" onclick="closeVideoModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <video id="videoPlayer" autoplay controls>
+                <source src="img/sidebar/video/video.mp4" type="video/mp4">
+                Tu navegador no soporta el elemento de video.
+            </video>
+        </div>
+    </div>
 
 
     <script>
-        function closeLocationModal() {
-            document.getElementById('locationModalOverlay').style.display = 'none';
-        }
 
-        function closeCommonAreasModal() {
-            document.getElementById('commonAreasModalOverlay').style.display = 'none';
+        function closeVideoModal() {
+            document.getElementById("video").classList.remove("active");
+            const modal = document.getElementById("videoModalOverlay");
+            const video = document.getElementById("videoPlayer");
 
-            // Limpiar marcadores de áreas comunes al cerrar el modal
-            if (typeof viewer !== 'undefined' && viewer.entities && viewer.entities.values) {
-                const areaEntitiesToRemove = viewer.entities.values.filter(entity =>
-                    entity.id && entity.id.startsWith("area_comun_")
-                );
-                areaEntitiesToRemove.forEach(entity => viewer.entities.remove(entity));
-            }
-        }
+            if (modal && video) {
+                // Pausar el video
+                video.pause();
 
-        function openFotos360Modal(kuulaUrl) {
-            console.log("Abriendo modal con URL:", kuulaUrl);
-
-            const modal = document.getElementById('fotos360ModalOverlay');
-            const iframe = document.getElementById('fotos360Iframe');
-
-            console.log("Modal encontrado:", modal);
-            console.log("Iframe encontrado:", iframe);
-
-            if (modal && iframe) {
-                // Configurar el iframe
-                iframe.src = kuulaUrl;
-
-                // Mostrar el modal
-                modal.style.display = 'flex';
-
-                // Forzar reflow para que la animación funcione
-                modal.offsetHeight;
-
-                // Agregar la clase show para activar la animación
-                modal.classList.add('show');
-
-                console.log("Modal abierto correctamente");
-            } else {
-                console.error("No se encontraron los elementos del modal");
-            }
-        }
-
-        function closeFotos360Modal() {
-            const modal = document.getElementById('fotos360ModalOverlay');
-            const iframe = document.getElementById('fotos360Iframe');
-
-            if (modal && iframe) {
                 // Remover la clase show para iniciar la animación de cierre
-                modal.classList.remove('show');
+                modal.classList.remove("show");
 
                 // Esperar a que termine la animación antes de ocultar
                 setTimeout(() => {
-                    modal.style.display = 'none';
-                    iframe.src = ''; // Limpiar el iframe
+                    modal.style.display = "none";
+                    // Resetear el video al inicio
+                    video.currentTime = 0;
                 }, 400); // 400ms para que coincida con la duración de la animación
             }
         }
 
-        function openAreasComunesImagesModal(imageUrl) {
-            console.log("Abriendo modal de imagen con URL:", imageUrl);
-
-            const modal = document.getElementById('areasComunesImagesModalOverlay');
-            const img = document.getElementById('areasComunesImage');
-
-            console.log("Modal encontrado:", modal);
-            console.log("Imagen encontrada:", img);
-
-            if (modal && img) {
-                // Configurar la imagen
-                img.src = imageUrl;
-
-                // Mostrar el modal
-                modal.style.display = 'flex';
-
-                // Forzar reflow para que la animación funcione
-                modal.offsetHeight;
-
-                // Agregar la clase show para activar la animación
-                modal.classList.add('show');
-
-                console.log("Modal de imagen abierto correctamente");
-            } else {
-                console.error("No se encontraron los elementos del modal de imagen");
-            }
-        }
-
-        function closeAreasComunesImagesModal() {
-            const modal = document.getElementById('areasComunesImagesModalOverlay');
-            const img = document.getElementById('areasComunesImage');
-
-            if (modal && img) {
-                // Remover la clase show para iniciar la animación de cierre
-                modal.classList.remove('show');
-
-                // Esperar a que termine la animación antes de ocultar
-                setTimeout(() => {
-                    modal.style.display = 'none';
-                    img.src = ''; // Limpiar la imagen
-                }, 400); // 400ms para que coincida con la duración de la animación
-            }
-        }
-
-        function closeLotSearchModal() {
-            document.getElementById('lotSearchModalOverlay').style.display = 'none';
-        }
-
-        function openLotSearchModal() {
-            document.getElementById('lotSearchModalOverlay').style.display = 'flex';
-            loadLotData();
-        }
-
-        function clearFilters() {
-            // Reset price sliders
-            const priceMinSlider = document.querySelector('input[name="priceMin"]');
-            const priceMaxSlider = document.querySelector('input[name="priceMax"]');
-            if (priceMinSlider && priceMaxSlider) {
-                // Reset to initial values
-                priceMinSlider.value = 0;
-                priceMaxSlider.value = 60000; // Default max value
-                updatePriceLabels();
-            }
-
-            // Reset area sliders
-            const areaMinSlider = document.querySelector('input[name="areaMin"]');
-            const areaMaxSlider = document.querySelector('input[name="areaMax"]');
-            if (areaMinSlider && areaMaxSlider) {
-                // Reset to initial values
-                areaMinSlider.value = 90;
-                areaMaxSlider.value = 500; // Default max value
-                updateAreaLabels();
-            }
-
-            // Reset amenity buttons
-            document.querySelectorAll('.amenity-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector('.amenity-btn[data-amenity="juegos"]').classList.add('active');
-
-            // Reset status buttons
-            document.querySelectorAll('.status-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector('.status-btn[data-status="disponible"]').classList.add('active');
-
-            // Reset sort dropdown
-            document.getElementById('sortSelect').value = 'area-asc';
-
-            // Reload data immediately
-            loadLotData();
-        }
-
-        // Función para actualizar sliders de rango dual
-        function updateRangeSlider(sliderContainer, minInput, maxInput, minOutput, maxOutput, inclRange, formatValue) {
-            const minValue = parseInt(minInput.value);
-            const maxValue = parseInt(maxInput.value);
-            const maxRange = parseInt(minInput.getAttribute('max'));
-            const minRange = parseInt(minInput.getAttribute('min'));
-
-            // Actualizar outputs (solo el contenido, no la posición)
-            minOutput.innerHTML = formatValue(minValue);
-            maxOutput.innerHTML = formatValue(maxValue);
-
-            // Actualizar rango incluido
-            if (minValue > maxValue) {
-                inclRange.style.width = ((minValue - maxValue) / (maxRange - minRange)) * 100 + '%';
-                inclRange.style.left = ((maxValue - minRange) / (maxRange - minRange)) * 100 + '%';
-            } else {
-                inclRange.style.width = ((maxValue - minValue) / (maxRange - minRange)) * 100 + '%';
-                inclRange.style.left = ((minValue - minRange) / (maxRange - minRange)) * 100 + '%';
-            }
-        }
-
-        function updatePriceLabels() {
-            const priceMin = document.querySelector('input[name="priceMin"]');
-            const priceMax = document.querySelector('input[name="priceMax"]');
-            const priceOutputMin = document.querySelector('.price-output-min');
-            const priceOutputMax = document.querySelector('.price-output-max');
-            const priceInclRange = document.querySelector('.price-range-slider .incl-range');
-
-            if (priceMin && priceMax && priceOutputMin && priceOutputMax && priceInclRange) {
-                updateRangeSlider(
-                    '.price-range-slider',
-                    priceMin,
-                    priceMax,
-                    priceOutputMin,
-                    priceOutputMax,
-                    priceInclRange,
-                    (value) => `$${parseInt(value).toLocaleString()}`
-                );
-            }
-        }
-
-        function updateAreaLabels() {
-            const areaMin = document.querySelector('input[name="areaMin"]');
-            const areaMax = document.querySelector('input[name="areaMax"]');
-            const areaOutputMin = document.querySelector('.area-output-min');
-            const areaOutputMax = document.querySelector('.area-output-max');
-            const areaInclRange = document.querySelector('.area-range-slider .incl-range');
-
-            if (areaMin && areaMax && areaOutputMin && areaOutputMax && areaInclRange) {
-                updateRangeSlider(
-                    '.area-range-slider',
-                    areaMin,
-                    areaMax,
-                    areaOutputMin,
-                    areaOutputMax,
-                    areaInclRange,
-                    (value) => `${parseInt(value)} m²`
-                );
-            }
-        }
-
-        async function loadLotData() {
-            // Construir lista de lotes desde terrenos.geojson
-            let lots = [];
-            let maxPrice = 0;
-            let maxArea = 0;
-            try {
-                const resp = await fetch('./data/terrenos.geojson');
-                const gj = await resp.json();
-                const feats = (gj && gj.features) ? gj.features : [];
-                lots = feats
-                    .filter(f => f && f.properties)
-                    .filter(f => {
-                        const p = f.properties || {};
-                        // Excluir jardines y lotes sin número válido
-                        const number = p.number || '';
-                        const lote = p.lote || '';
-                        return number !== 'Jardín' && (lote !== '' || (number !== '' && !isNaN(parseInt(number))));
-                    })
-                    .map((f, idx) => {
-                        const p = f.properties || {};
-                        // Normalizar área (ya viene como número o string numérico en nuevo esquema)
-                        let areaNum = 0;
-                        if (typeof p.area === 'string') {
-                            areaNum = parseFloat(p.area.replace(',', '.')) || 0;
-                        } else if (typeof p.area === 'number') {
-                            areaNum = p.area;
-                        }
-                        // Precio
-                        let precioNum = 0;
-                        if (typeof p.precio === 'string') {
-                            precioNum = parseFloat(p.precio.replace(',', '.')) || 0;
-                        } else if (typeof p.precio === 'number') {
-                            precioNum = p.precio;
-                        }
-
-                        // Calcular precio máximo
-                        if (precioNum > maxPrice) {
-                            maxPrice = precioNum;
-                        }
-
-                        // Calcular área máxima
-                        if (areaNum > maxArea) {
-                            maxArea = areaNum;
-                        }
-
-                        const estado = p.estado || 'disponible';
-                        const manzana = p.manzana || '';
-                        const lote = p.lote || '';
-                        return {
-                            id: p.direccion || `lote-${idx}`,
-                            number: p.direccion || (manzana || lote ? `Mz. ${manzana} - Lote ${lote}` : (p.number || `Lote ${idx + 1}`)),
-                            price: precioNum,
-                            area: areaNum,
-                            status: String(estado).toLowerCase()
-                        };
-                    });
-
-                // Actualizar los sliders de precio con el valor real (solo si es la primera carga)
-                const priceMinSlider = document.querySelector('input[name="priceMin"]');
-                const priceMaxSlider = document.querySelector('input[name="priceMax"]');
-                if (priceMinSlider && priceMaxSlider && maxPrice > 0) {
-                    priceMinSlider.max = maxPrice;
-                    priceMaxSlider.max = maxPrice;
-                    // Solo establecer los valores si no se han tocado los sliders
-                    if (!priceMinSlider.getAttribute('data-initial-value')) {
-                        priceMinSlider.value = 0;
-                        priceMaxSlider.value = maxPrice;
-                        priceMinSlider.setAttribute('data-initial-value', 0);
-                        priceMaxSlider.setAttribute('data-initial-value', maxPrice);
-                    }
-                    updatePriceLabels();
-                }
-
-                // Actualizar los sliders de área con el valor real (solo si es la primera carga)
-                const areaMinSlider = document.querySelector('input[name="areaMin"]');
-                const areaMaxSlider = document.querySelector('input[name="areaMax"]');
-                if (areaMinSlider && areaMaxSlider && maxArea > 0) {
-                    areaMinSlider.max = Math.ceil(maxArea);
-                    areaMaxSlider.max = Math.ceil(maxArea);
-                    // Solo establecer los valores si no se han tocado los sliders
-                    if (!areaMinSlider.getAttribute('data-initial-value')) {
-                        areaMinSlider.value = 90;
-                        areaMaxSlider.value = Math.ceil(maxArea);
-                        areaMinSlider.setAttribute('data-initial-value', 90);
-                        areaMaxSlider.setAttribute('data-initial-value', Math.ceil(maxArea));
-                    }
-                    updateAreaLabels();
-                }
-            } catch (e) {
-                console.error('No se pudo cargar terrenos.geojson', e);
-            }
-
-            // Aplicar filtros
-            const filteredLots = applyFilters(lots);
-
-            // Apply sorting
-            const sortedLots = applySorting(filteredLots);
-
-            // Update results count
-            document.getElementById('resultsCount').textContent = `Mostrando (${sortedLots.length}) lotes`;
-
-            // Render lot cards
-            renderLotCards(sortedLots);
-        }
-
-        function applyFilters(lots) {
-            const priceMin = parseInt(document.querySelector('input[name="priceMin"]').value);
-            const priceMax = parseInt(document.querySelector('input[name="priceMax"]').value);
-            const areaMin = parseInt(document.querySelector('input[name="areaMin"]').value);
-            const areaMax = parseInt(document.querySelector('input[name="areaMax"]').value);
-
-            const selectedStatus = Array.from(document.querySelectorAll('.status-btn.active'))
-                .map(btn => btn.getAttribute('data-status'));
-
-            return lots.filter(lot => {
-                // Price filter - rango de precio
-                if (lot.price < priceMin || lot.price > priceMax) return false;
-
-                // Area filter - rango de área
-                if (lot.area < areaMin || lot.area > areaMax) return false;
-
-                // Status filter
-                if (!selectedStatus.includes(lot.status)) return false;
-
-                return true;
-            });
-        }
-
-        function applySorting(lots) {
-            const sortSelect = document.getElementById('sortSelect');
-            const sortValue = sortSelect ? sortSelect.value : 'area-asc';
-
-            return lots.sort((a, b) => {
-                switch (sortValue) {
-                    case 'area-asc':
-                        return a.area - b.area;
-                    case 'area-desc':
-                        return b.area - a.area;
-                    case 'price-asc':
-                        return a.price - b.price;
-                    case 'price-desc':
-                        return b.price - a.price;
-                    case 'number-asc':
-                        const numA = parseInt(a.number) || 0;
-                        const numB = parseInt(b.number) || 0;
-                        return numA - numB;
-                    case 'number-desc':
-                        const numA_desc = parseInt(a.number) || 0;
-                        const numB_desc = parseInt(b.number) || 0;
-                        return numB_desc - numA_desc;
-                    default:
-                        return 0;
-                }
-            });
-        }
-
-        function renderLotCards(lots) {
-            const container = document.getElementById('lotCardsContainer');
-            container.innerHTML = '';
-
-            lots.forEach(lot => {
-                const card = document.createElement('div');
-                card.className = 'lot-card';
-                card.innerHTML = `
-                    <div class="lot-card-header">${lot.number}</div>
-                    <div class="lot-card-separator"></div>
-                    <div class="lot-card-status">${lot.status.charAt(0).toUpperCase() + lot.status.slice(1)}</div>
-                    <div class="lot-card-details">
-                        <span class="lot-card-label">Precio</span>
-                        <span class="lot-card-value">$ ${lot.price.toLocaleString()}</span>
-                    </div>
-                    <div class="lot-card-details">
-                        <span class="lot-card-label">Área</span>
-                        <span class="lot-card-value">${lot.area.toFixed(2)} m²</span>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function viewLotDetails(lotId) {
-            // This would open the lot details modal or navigate to lot details
-            console.log('Viewing lot details for:', lotId);
-            // For now, just close the search modal
-            closeLotSearchModal();
-        }
-
-        // Nueva función para limpiar todos los modales
-        function cleanupAll() {
-            // Cerrar todos los modales
-            document.getElementById('commonAreasModalOverlay').style.display = 'none';
-            document.getElementById('locationModalOverlay').style.display = 'none';
-            document.getElementById('modalOverlay').style.display = 'none';
-            document.getElementById('lotSearchModalOverlay').style.display = 'none';
-
-            // Notificar al viewer que el modal se cerró (para limpiar selecciones)
-            if (window.cesiumOnModalClosed) {
-                try { window.cesiumOnModalClosed(); } catch (e) { /* noop */ }
-            }
-
-            // Limpiar selección del polígono si existe
-            if (window.cesiumClearSelection) {
-                try { window.cesiumClearSelection(); } catch (e) { /* noop */ }
-            }
-        }
-
-        // Función para cerrar todos los modales excepto uno específico
-        function closeAllModalsExcept(exceptModalId) {
-            const allModals = [
-                'commonAreasModalOverlay',
-                'locationModalOverlay',
-                'modalOverlay',
-                'lotSearchModalOverlay'
-            ];
-
-            allModals.forEach(modalId => {
-                if (modalId !== exceptModalId) {
-                    const modal = document.getElementById(modalId);
-                    if (modal) {
-                        modal.style.display = 'none';
-                    }
-                }
-            });
-        }
-
-        // Exponer las funciones al objeto window para que puedan ser llamadas desde index.js
-        window.cleanupAll = cleanupAll;
-        window.closeAllModalsExcept = closeAllModalsExcept;
-        window.closeAllModals = closeAllModals;
 
         function closeModal() {
-            document.querySelector('.main-modal-overlay').style.display = 'none';
+            document.querySelector('.lot-modal').style.display = 'none';
             // Limpiar selección del polígono si existe
             if (window.cesiumClearSelection) {
                 try { window.cesiumClearSelection(); } catch (e) { /* noop */ }
             }
-            // Notificar cierre para suprimir hover momentáneo
-            if (window.cesiumOnModalClosed) {
-                try { window.cesiumOnModalClosed(); } catch (e) { /* noop */ }
-            }
         }
-
-        function closeAllModals() {
-            // Cerrar modal principal de propiedades
-            const mainModal = document.getElementById('modalOverlay');
-            if (mainModal) mainModal.style.display = 'none';
-
-            // Cerrar modal 360
-            const modal360 = document.getElementById('modal360');
-            if (modal360) modal360.style.display = 'none';
-
-            // Cerrar modal de ubicaciones
-            const locationModal = document.getElementById('locationModalOverlay');
-            if (locationModal) locationModal.style.display = 'none';
-
-            // Cerrar modal de áreas comunes
-            const commonAreasModal = document.getElementById('commonAreasModalOverlay');
-            if (commonAreasModal) commonAreasModal.style.display = 'none';
-
-            // Cerrar modal de búsqueda de lotes
-            const lotSearchModal = document.getElementById('lotSearchModalOverlay');
-            if (lotSearchModal) lotSearchModal.style.display = 'none';
-
-            // Limpiar selección del polígono si existe
-            if (window.cesiumClearSelection) {
-                try { window.cesiumClearSelection(); } catch (e) { /* noop */ }
-            }
-            // Notificar cierre para suprimir hover momentáneo
-            if (window.cesiumOnModalClosed) {
-                try { window.cesiumOnModalClosed(); } catch (e) { /* noop */ }
-            }
-        }
-
-
-        // Cerrar con tecla Escape
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape') {
-                closeAllModals();
-            }
-        });
-
-        // Event listeners para los iconos de la barra de herramientas (sin cerrar modales)
-        document.addEventListener('DOMContentLoaded', function () {
-            // Obtener todos los iconos de la barra de herramientas
-            const toolbarIcons = document.querySelectorAll('.icon-toolbar .icon-button');
-
-            // Los botones de la barra de herramientas ya tienen sus propios event listeners
-            // No necesitamos cerrar modales aquí
-        });
-
-        // Event listeners for lot search modal
-        document.addEventListener('DOMContentLoaded', function () {
-            // Price sliders (min and max)
-            const priceMin = document.querySelector('input[name="priceMin"]');
-            const priceMax = document.querySelector('input[name="priceMax"]');
-            if (priceMin && priceMax) {
-                // Función para manejar los sliders de precio
-                [priceMin, priceMax].forEach(slider => {
-                    slider.addEventListener('input', function () {
-                        updatePriceLabels();
-                        loadLotData();
-                    });
-                    slider.addEventListener('mouseup', function () {
-                        this.blur();
-                    });
-                    slider.addEventListener('mousedown', function () {
-                        updatePriceLabels();
-                    });
-                });
-                // Inicializar los sliders
-                updatePriceLabels();
-            }
-
-            // Area sliders (min and max)
-            const areaMin = document.querySelector('input[name="areaMin"]');
-            const areaMax = document.querySelector('input[name="areaMax"]');
-            if (areaMin && areaMax) {
-                // Función para manejar los sliders de área
-                [areaMin, areaMax].forEach(slider => {
-                    slider.addEventListener('input', function () {
-                        updateAreaLabels();
-                        loadLotData();
-                    });
-                    slider.addEventListener('mouseup', function () {
-                        this.blur();
-                    });
-                    slider.addEventListener('mousedown', function () {
-                        updateAreaLabels();
-                    });
-                });
-                // Inicializar los sliders
-                updateAreaLabels();
-            }
-
-            // Status buttons
-            document.querySelectorAll('.status-btn').forEach(btn => {
-                btn.addEventListener('click', function () {
-                    // Remove active from all status buttons
-                    document.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
-                    // Add active to clicked button
-                    this.classList.add('active');
-                    loadLotData();
-                });
-            });
-
-            // Sort dropdown
-            const sortSelect = document.getElementById('sortSelect');
-            if (sortSelect) {
-                sortSelect.addEventListener('change', function () {
-                    loadLotData();
-                });
-            }
-
-            // Connect lot button to open modal
-            const lotButton = document.getElementById('lotes');
-            if (lotButton) {
-                lotButton.addEventListener('click', function () {
-                    openLotSearchModal();
-                });
-            }
-        });
-
-        // Funciones para manejar los botones del entorno
-        function showEntornoButtons() {
-            const container = document.getElementById('entornoButtonsContainer');
-            if (container) {
-                container.style.display = 'flex';
-            }
-        }
-
-        function hideEntornoButtons() {
-            const container = document.getElementById('entornoButtonsContainer');
-            if (container) {
-                container.style.display = 'none';
-            }
-        }
-
-        // Exponer las funciones globalmente para que puedan ser llamadas desde index.js
-        window.showEntornoButtons = showEntornoButtons;
-        window.hideEntornoButtons = hideEntornoButtons;
     </script>
 </body>
 
