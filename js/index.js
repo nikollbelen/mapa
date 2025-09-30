@@ -1853,25 +1853,15 @@ document.getElementById("closeVideoModal").addEventListener("click", () => {
 });
 
 
-// Controles: pan arriba/abajo y zoom in/out mediante botones de la UI
+// Bottombar
 
 const cam = viewer.camera;
-
-const byId = (id) => document.getElementById(id);
-const btnUp = byId("up");
-const btnDown = byId("down");
-const btnZoomIn = byId("zoomIn");
-const btnZoomOut = byId("zoomOut");
-const btnHome = byId("home");
-const btnView3D = byId("view3d");
-const btnGrid = byId("grid");
 
 // Factor de movimiento basado en la altura actual para que sea proporcional
 const getStep = () => Math.max(5.0, cam.positionCartographic.height * 0.1);
 const getZoomStep = () => Math.max(1.0, cam.positionCartographic.height * 0.15);
 
-if (btnUp) {
-  btnUp.addEventListener("click", () => {
+document.getElementById("up").addEventListener("click", () => {
     // Calcular la nueva posición
     const currentPosition = cam.position;
     const newPosition = Cesium.Cartesian3.add(
@@ -1886,10 +1876,8 @@ if (btnUp) {
       duration: 1.0 // ← Duración en segundos
     });
   });
-}
 
-if (btnDown) {
-  btnDown.addEventListener("click", () => {
+document.getElementById("down").addEventListener("click", () => {
     const currentPosition = cam.position;
     const newPosition = Cesium.Cartesian3.subtract(
       currentPosition,
@@ -1898,10 +1886,8 @@ if (btnDown) {
     );
     cam.flyTo({ destination: newPosition, duration: 1.0 });
   });
-}
 
-if (btnZoomIn) {
-  btnZoomIn.addEventListener("click", () => {
+document.getElementById("zoomIn").addEventListener("click", () => {
     const currentHeight = cam.positionCartographic.height;
     const newHeight = Math.max(10, currentHeight - getZoomStep()); // Mínimo 10m
     
@@ -1914,10 +1900,8 @@ if (btnZoomIn) {
       duration: 1.0
     });
   });
-}
 
-if (btnZoomOut) {
-  btnZoomOut.addEventListener("click", () => {
+document.getElementById("zoomOut").addEventListener("click", () => {
     const currentHeight = cam.positionCartographic.height;
     const newHeight = currentHeight + getZoomStep();
     
@@ -1930,20 +1914,16 @@ if (btnZoomOut) {
       duration: 1.0
     });
   });
-}
 
-if (btnHome) {
-  btnHome.addEventListener("click", () => {
+document.getElementById("home").addEventListener("click", () => {
     try {
       flyToLotesView();
     } catch (error) {
       console.error("Error al volar a la vista superior:", error);
     }
   });
-}
 
-if (btnView3D) {
-  btnView3D.addEventListener("click", () => {
+document.getElementById("view3d").addEventListener("click", () => {
     const boundingSphere = Cesium.BoundingSphere.fromPoints(lotesPositions);
     viewer.camera.flyToBoundingSphere(boundingSphere, {
       offset: new Cesium.HeadingPitchRange(
@@ -1953,13 +1933,13 @@ if (btnView3D) {
         )
       });
   });
-}
 
 const alphaGrid = 0.01;
 const alphaNoGrid = 0.5;
 
-if (btnGrid) {
-  btnGrid.addEventListener("click", () => {
+const btnGrid = document.getElementById("grid");
+
+btnGrid.addEventListener("click", () => {
     if (btnGrid.classList.contains("active")) {
       btnGrid.classList.remove("active");
       window.setTerrenosAlpha(alphaNoGrid);
@@ -1968,7 +1948,6 @@ if (btnGrid) {
       window.setTerrenosAlpha(alphaGrid);  
     }
   });
-}
 
 
 
