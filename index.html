@@ -293,7 +293,7 @@
     <!-- Modal para Áreas comunes -->
     <div class="common-areas-modal background-container border-container" id="commonAreasModalOverlay"
         style="display: none;">
-        <button class="close-btn" onclick="reiniciarMenu()">
+        <button class="close-btn" id="closeCommonAreasModal">
             <i class="fas fa-times"></i>
         </button>
         <div class="common-areas-modal-header">
@@ -325,7 +325,7 @@
     <!-- Modal para Búsqueda de Lotes -->
     <div class="lot-search-modal background-container border-container" id="lotSearchModalOverlay"
         style="display: none;">
-        <button class="close-btn" onclick="reiniciarMenu()">
+        <button class="close-btn" id="closeLotSearchModal">
             <i class="fas fa-times"></i>
         </button>
         <div class="lot-search-header">
@@ -465,7 +465,7 @@
     <!-- Overlay para Video -->
     <div class="video-overlay-background" id="videoModalOverlay" style="display: none;">
         <div class="video-overlay">
-            <button class="close-btn" onclick="closeVideoModal()">
+            <button class="close-btn" id="closeVideoModal">
                 <i class="fas fa-times"></i>
             </button>
             <video id="videoPlayer" autoplay controls>
@@ -477,28 +477,6 @@
 
 
     <script>
-
-        function closeVideoModal() {
-            document.getElementById("video").classList.remove("active");
-            const modal = document.getElementById("videoModalOverlay");
-            const video = document.getElementById("videoPlayer");
-
-            if (modal && video) {
-                // Pausar el video
-                video.pause();
-
-                // Remover la clase show para iniciar la animación de cierre
-                modal.classList.remove("show");
-
-                // Esperar a que termine la animación antes de ocultar
-                setTimeout(() => {
-                    modal.style.display = "none";
-                    // Resetear el video al inicio
-                    video.currentTime = 0;
-                }, 400); // 400ms para que coincida con la duración de la animación
-            }
-        }
-
 
         function closeModal() {
             document.querySelector('.lot-modal').style.display = 'none';
